@@ -23,3 +23,20 @@ World::World(std::vector<Entity*> entities) : entities(entities){
 World::~World() {
 	entities.clear();
 }
+
+
+/*
+	@brief Method to create a world with its respective entities.
+*/
+void World::createWorld() {
+
+}
+
+
+/*
+	@brief Method for reading the command entered by the player.
+	@param command Vector that contains the command entered by the player.
+*/
+void World::processCommand(const std::vector<std::string>& command) {
+
+}
