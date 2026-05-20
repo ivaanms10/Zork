@@ -1,9 +1,8 @@
 #ifndef WORLD_H
 #define WORLD_H
 
-#include "Entity.h"
+#include "Exit.h"
 #include <vector>
-#include <string>
 
 
 class World{

@@ -9,7 +9,10 @@ class Room : public Entity{
 
 	public:
 		Room();
+		Room(const std::string& name, const std::string& description);
 		~Room();
+
+		void Update();
 };
 
 #endif // !ROOM_H
