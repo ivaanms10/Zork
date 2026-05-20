@@ -20,7 +20,7 @@ Entity::Entity(const std::string& name, const std::string& description) : type(E
 
 
 /*
-	@brief Destroyer of the Entity class.
+	@brief Destructor of the Entity class.
 */
 Entity::~Entity() {
 
