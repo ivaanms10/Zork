@@ -3,7 +3,7 @@
 /*
 	@brief Default constructor of the Entity class.
 */
-Entity::Entity() : name(""), description(""), type(ENTITY){
+Entity::Entity() : type(EntityType::ENTITY), name(""), description("") {
 	
 }
 
@@ -14,7 +14,7 @@ Entity::Entity() : name(""), description(""), type(ENTITY){
 	@param description Description of the entity.
 
 */
-Entity::Entity(const std::string& name, const std::string& description) : name(name), description(description), type(ENTITY){
+Entity::Entity(const std::string& name, const std::string& description) : type(EntityType::ENTITY), name(name), description(description) {
 
 }
 
@@ -23,5 +23,13 @@ Entity::Entity(const std::string& name, const std::string& description) : name(n
 	@brief Destroyer of the Entity class.
 */
 Entity::~Entity() {
+
+}
+
+
+/*
+	@brief Method to update the entity states during the game.
+*/
+void Entity::Update() {
 
 }

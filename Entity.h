@@ -5,7 +5,7 @@
 #include <string>
 
 //Enum with the types of entities.
-enum EntityType {
+enum class EntityType{
 	ENTITY,
 	CREATURE,
 	NPC,
@@ -27,6 +27,8 @@ class Entity {
 		Entity();
 		Entity(const std::string& name, const std::string& description);
 		virtual ~Entity();
+
+		virtual void Update();
 };
 
 #endif // !ENTITY_H
