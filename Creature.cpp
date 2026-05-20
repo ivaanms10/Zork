@@ -3,17 +3,18 @@
 /*
 	@brief Default constructor of the Creature class.
 */
-Creature::Creature() : location(nullptr), name("") {
+Creature::Creature() : location(nullptr), name(""), health(100) {
 
 }
 
 
 /*
 	@brief Parameterized constructor of the Creature class.
-	@param location Room where the creature is located.
 	@param name Creature name.
+	@param location Room where the creature is located.
+	@param health Number of lives the creature has.
 */
-Creature::Creature(Room* location, const std::string& name) : location(location), name(name) {
+Creature::Creature(const std::string& name, Room* location, const int& health) : location(location), name(name), health(health) {
 
 }
 

@@ -3,13 +3,15 @@
 
 #include "Creature.h"
 
+static const int MAX_HEALTH = 100;
 
 class Player : public Creature{
 	private:
+		int shield;
 
 	public:
 		Player();
-		Player(Room* location, const std::string& name);
+		Player(const std::string& name, Room* location);
 		~Player();
 
 };

@@ -47,12 +47,15 @@ void World::createWorld() {
 	Exit* exit5 = new Exit(DirectionType::WEST, room4, room7); //Great Hall-Locked Treasure
 	Exit* exit6 = new Exit(DirectionType::NORTH, room6, room3); //Smuggler's Cove-Sunken Garden
 
+	Player* player1 = new Player("Z1Tr0k", room1);
+
 	entities.push_back(room1); entities.push_back(room2); entities.push_back(room3); entities.push_back(room4); 
 	entities.push_back(room5); entities.push_back(room6); entities.push_back(room7);
 
 	entities.push_back(exit1); entities.push_back(exit2); entities.push_back(exit3); 
 	entities.push_back(exit4); entities.push_back(exit5); entities.push_back(exit6);
 
+	entities.push_back(player1);
 }
 
 
@@ -61,7 +64,10 @@ void World::createWorld() {
 	@param command Vector that contains the command entered by the player.
 */
 void World::processCommand(const std::vector<std::string>& command) {
-	if (!command.empty()) {
-		
+	if (command.empty()) {
+		return;
+	}else if (command[0] == "Command") {
+		std::cout << "Exit: Use to finish the game." << std::endl;
+		std::cout << "There are no commands available right now." << std::endl;
 	}
 }

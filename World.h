@@ -2,6 +2,7 @@
 #define WORLD_H
 
 #include "Exit.h"
+#include "Player.h"
 #include <vector>
 
 

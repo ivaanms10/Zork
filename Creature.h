@@ -3,14 +3,15 @@
 
 #include "Room.h"
 
-class Creature{
+class Creature : public Entity{
 	private:
-		Room* location;
 		std::string name;
+		Room* location;
+		int health;
 
 	public:
 		Creature();
-		Creature(Room* location, const std::string& name);
+		Creature(const std::string& name, Room* location, const int& health);
 		~Creature();
 };
 
