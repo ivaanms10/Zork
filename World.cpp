@@ -54,6 +54,8 @@ void World::createWorld() {
 	Exit* exit12 = new Exit(DirectionType::EAST, room5, room6,"Exit 12","Rocky Cavern-Smuggler's Cove");
 	Exit* exit13 = new Exit(DirectionType::WEST,room6, room5,"Exit 13","Smuggler's Cove-Rocky Cavern");
 
+	Item* item1 = new Item("Sword", "Sword of iron from the Rocky Cavern.", EntityType::ITEM);
+
 	player = new Player("Z1Tr0k", "First player playing zork game.", room1);
 
 	entities.push_back(room1); entities.push_back(room2); entities.push_back(room3); entities.push_back(room4); 
@@ -62,6 +64,8 @@ void World::createWorld() {
 	entities.push_back(exit1); entities.push_back(exit2); entities.push_back(exit3); entities.push_back(exit4); entities.push_back(exit5); entities.push_back(exit6); entities.push_back(exit7);
 	entities.push_back(exit8); entities.push_back(exit9); entities.push_back(exit10); entities.push_back(exit11); entities.push_back(exit12); entities.push_back(exit13);
 	
+	entities.push_back(item1);
+
 	entities.push_back(player);
 }
 
@@ -77,12 +81,13 @@ void World::processCommand(const std::vector<std::string>& command) {
 		std::cout << "Exit: Use to finish the game." << std::endl;
 		std::cout << "There are no commands available right now." << std::endl;
 	}else if (command[0] == "Stats") {
-		player->stats();
+		player->statsPlayer();
 	}else if (command[0] == "Go") {
 		movePlayer(command);
-	}
-	else if (command[0] == "Look") {
-		player->look();
+	}else if (command[0] == "Show") {
+		player->showInventory();
+	}else if (command[0] == "Take") {
+		takeItem(command);
 	}
 }
 
@@ -98,6 +103,21 @@ void World::movePlayer(const std::vector<std::string>& command) const{
 						player->setLocation(exit->getDestination());
 						break;
 					}
+				}
+			}
+		}
+	}
+}
+
+
+void World::takeItem(const std::vector<std::string>& command) const {
+	if (command.size() == 2) {
+		for (const auto& it : entities) {
+			if (it->getType() == EntityType::ITEM) {
+				Item* item = dynamic_cast<Item*>(it); //Pointer to the item.
+
+				if (item->getName() == command[1]) {
+					player->takeItem(item);
 				}
 			}
 		}

@@ -2,11 +2,15 @@
 #define PLAYER_H
 
 #include "Creature.h"
+#include "Item.h"
+
+static const int MAX_ITEM_INVENTORY = 5;
 
 class Player : public Creature{
 	private:
+		std::list<Item*> inventory;
 		int numKills = 0;
-		int  numDeath = 0;
+		int numDeath = 0;
 		int numGold = 0; //Gold to buy new Items.
 
 	public:
@@ -14,8 +18,9 @@ class Player : public Creature{
 		Player(const std::string& name, const std::string& description, Room* location);
 		~Player();
 
-		void stats() const;
-		void look() { std::cout << "You are in the room: " << Creature::getLocation()->getName() << std::endl; }
+		void statsPlayer() const;
+		void takeItem(Item* item);
+		void showInventory() const;
 };
 
 #endif // !PLAYER_H
