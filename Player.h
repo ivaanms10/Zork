@@ -11,11 +11,11 @@ class Player : public Creature{
 
 	public:
 		Player();
-		Player(const std::string& name, Room* location);
+		Player(const std::string& name, const std::string& description, Room* location);
 		~Player();
 
 		void stats() const;
-
+		void look() { std::cout << "You are in the room: " << Creature::getLocation()->getName() << std::endl; }
 };
 
 #endif // !PLAYER_H

@@ -3,7 +3,7 @@
 /*
 	@brief Default constructor of the Player class.
 */
-Player::Player() : Creature("", nullptr, MAX_HEALTH, 0), numKills(0), numDeath(0) {
+Player::Player() : Creature("", "", EntityType::PLAYER, nullptr, MAX_HEALTH, 0), numKills(0), numDeath(0), numGold(0) {
 
 }
 
@@ -13,7 +13,7 @@ Player::Player() : Creature("", nullptr, MAX_HEALTH, 0), numKills(0), numDeath(0
 	@param name Player name.
 	@param location Room where the player is located.
 */
-Player::Player(const std::string& name, Room* location) : Creature(name, location, MAX_HEALTH, 0), numKills(0), numDeath(0){
+Player::Player(const std::string& name, const std::string& description, Room* location) : Creature(name, description, EntityType::PLAYER, location, MAX_HEALTH, 0), numKills(0), numDeath(0), numGold(0){
 
 }
 
@@ -22,23 +22,25 @@ Player::Player(const std::string& name, Room* location) : Creature(name, locatio
 	@brief Destructor of the Player class.
 */
 Player::~Player(){
-
+    
 }
 
-
+/*
+    @brief Method to show in the screen the player stats.
+*/
 void Player::stats() const{
-    std::cout << "==================================================\n";
-    std::cout << "                 PERFIL DE JUGADOR                \n";
-    std::cout << "==================================================\n";
-    std::cout << " Nick: " << Creature::getName() << "                             \n";
-    std::cout << "--------------------------------------------------\n";
+    std::cout << "==================================================" << std::endl;
+    std::cout << "                 PERFIL DE JUGADOR                " << std::endl;
+    std::cout << "==================================================" << std::endl;
+    std::cout << " Nick: " << Creature::getName() << "              " << std::endl;
+    std::cout << "--------------------------------------------------" << std::endl;
 
-    std::cout << " HEALTH:  " << Creature::getHealth() << " / 100\n";
-    std::cout << " SHIELD: " << Creature::getShield() << " / 100\n";
+    std::cout << " HEALTH:  " << Creature::getHealth() << " / 100"    << std::endl;
+    std::cout << " SHIELD: " << Creature::getShield() << " / 100"     << std::endl;
 
-    std::cout << "--------------------------------------------------\n";
+    std::cout << "--------------------------------------------------" << std::endl;
     std::cout << " MARCADOR:\n";
-    std::cout << " Kills:   " << numKills << "          Muertes: " << numDeath << "\n";
-    std::cout << " Gold:  " << numGold << "\n";
-    std::cout << "==================================================\n";
+    std::cout << " Kills:   " << numKills << "                 Muertes: " << numDeath << std::endl;
+    std::cout << " Gold:  " << numGold << std::endl;
+    std::cout << "==================================================" << std::endl;
 }

@@ -17,6 +17,9 @@ class World{
 
 		void createWorld();
 		void processCommand(const std::vector<std::string> &command);
+
+
+		void movePlayer(const std::vector<std::string>& command) const;
 };
 
 #endif // !WORLD_H

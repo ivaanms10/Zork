@@ -8,19 +8,21 @@ static const int MAX_SHIELD = 100;
 
 class Creature : public Entity{
 	private:
-		std::string name;
 		Room* location;
 		int health;
 		int shield;
 
 	public:
 		Creature();
-		Creature(const std::string& name, Room* location, const int& health, const int& shield);
+		Creature(const std::string& name, const std::string& description, EntityType type, Room* location, const int& health, const int& shield);
 		~Creature();
 
-		std::string getName() const { return name; }
-		int getHealth() const { return health; }
-		int getShield() const { return shield; }
+		std::string getName() const { return Entity::getName(); } //Method to get the creature name.
+		int getHealth() const { return health; } //Method to get the creature health.
+		int getShield() const { return shield; } //Method to get the creature shield.
+		Room* getLocation() const { return location; } //Method to get the creature room.
+
+		void setLocation(Room* newLocation) { this->location = newLocation; } //Method to set a new creature room.
 
 };
 

@@ -3,7 +3,7 @@
 /*
 	@brief Default constructor of the Room class.
 */
-Room::Room(){
+Room::Room() : Entity("","",EntityType::ROOM) {
 
 }
 
@@ -13,7 +13,7 @@ Room::Room(){
 	@param name Name of the room.
 	@param description Room description.
 */
-Room::Room(const std::string& name, const std::string& description) : Entity(name, description) {
+Room::Room(const std::string& name, const std::string& description) : Entity(name, description, EntityType::ROOM) {
 
 }
 

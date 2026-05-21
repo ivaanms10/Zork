@@ -2,6 +2,7 @@
 #define EXIT_H
 
 #include "Room.h"
+#include <string>
 
 //Enum with the 4 possible directions.
 enum class DirectionType {
@@ -20,8 +21,12 @@ class Exit : public Entity{
 
 	public:
 		Exit();
-		Exit(DirectionType direction, Room* source, Room* destination);
+		Exit(DirectionType direction, Room* source, Room* destination, const std::string& name, const std::string& description);
 		~Exit();
+
+		std::string getDirectionType() const;
+		Room* getSource() const { return source; } //Method to get the source room.
+		Room* getDestination() const { return destination; } //Method to get the destination room.
 
 };
 
