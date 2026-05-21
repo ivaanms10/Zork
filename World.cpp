@@ -55,6 +55,7 @@ void World::createWorld() {
 	Exit* exit13 = new Exit(DirectionType::WEST,room6, room5,"Exit 13","Smuggler's Cove-Rocky Cavern");
 
 	Item* item1 = new Item("Sword", "Sword of iron from the Rocky Cavern.", EntityType::ITEM);
+	room6->addContains(item1);
 
 	player = new Player("Z1Tr0k", "First player playing zork game.", room1);
 
@@ -78,17 +79,26 @@ void World::processCommand(const std::vector<std::string>& command) {
 	if (command.empty()) {
 		return;
 	}else if (command[0] == "Command" ) {
-		std::cout << "Exit: Use to finish the game." << std::endl;
-		std::cout << "There are no commands available right now." << std::endl;
-	}else if (command[0] == "Stats") {
+		std::cout << "\n======= AVAILABLE COMMANDS =======" << std::endl;
+		std::cout << "Stats:          Shows player information." << std::endl;
+		std::cout << "Go [Direction]: Moves the player towards an exit (e.g., Go North)." << std::endl;
+		std::cout << "Show Room:      Displays the room description, exits, and items on the floor." << std::endl;
+		std::cout << "Show Inventory: Opens your backpack to view your carried items." << std::endl;
+		std::cout << "Take [Item]:    Picks up an item from the floor." << std::endl;
+		std::cout << "Drop [Item]:    Drops an item to the floor." << std::endl;
+		std::cout << "Exit:           Closes the game safely." << std::endl;
+		std::cout << "====================================\n" << std::endl;
+	}else if (command[0] == "stats") {
 		player->statsPlayer();
-	}else if (command[0] == "Go") {
+	}else if (command[0] == "go") {
 		movePlayer(command);
-	}else if (command[0] == "Show" && command[1] == "Inventory") {
+	}else if (command[0] == "show" && command[1] == "inventory") {
 		player->showInventory();
-	}else if (command[0] == "Take") {
-		takeItem(command);
-	}else if (command[0] == "Show" && command[1] == "Room") {
+	}else if (command[0] == "take") {
+		player->takeItem(command);
+	}else if (command[0] == "drop") {
+		player->dropItem(command);
+	}else if (command[0] == "show" && command[1] == "room") {
 		player->getLocation()->showRoom();
 	}
 }
@@ -105,21 +115,6 @@ void World::movePlayer(const std::vector<std::string>& command) const{
 						player->setLocation(exit->getDestination());
 						break;
 					}
-				}
-			}
-		}
-	}
-}
-
-
-void World::takeItem(const std::vector<std::string>& command) const {
-	if (command.size() == 2) {
-		for (const auto& it : entities) {
-			if (it->getType() == EntityType::ITEM) {
-				Item* item = dynamic_cast<Item*>(it); //Pointer to the item.
-
-				if (item->getName() == command[1]) {
-					player->takeItem(item);
 				}
 			}
 		}

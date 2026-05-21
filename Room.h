@@ -17,7 +17,7 @@ class Room : public Entity{
 		void showRoom() const;
 
 		void addEntity(Entity* entity) { Entity::addContains(entity); } //Method to add a new entity to the room.
-
+		void removeEntity(Entity* entity) { Entity::removeContains(entity); } //Method to remove an entity from the room.
 };
 
 #endif // !ROOM_H

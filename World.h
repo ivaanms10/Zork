@@ -20,7 +20,6 @@ class World{
 
 
 		void movePlayer(const std::vector<std::string>& command) const;
-		void takeItem(const std::vector<std::string>& command) const;
 
 };
 

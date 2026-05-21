@@ -18,7 +18,8 @@ class Player : public Creature{
 		~Player();
 
 		void statsPlayer() const;
-		void takeItem(Item* item);
+		void takeItem(const std::vector<std::string>& command);
+		void dropItem(const std::vector<std::string>& command);
 		void showInventory() const;
 };
 

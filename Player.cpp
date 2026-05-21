@@ -46,19 +46,6 @@ void Player::statsPlayer() const{
 
 
 /*
-    @brief Method to add an item to the player inventory.
-    @item item Item to be added to the inventory
-*/
-void Player::takeItem(Item* item) {
-    if (item != nullptr) {
-        if (Entity::getContains().size() <= MAX_ITEM_INVENTORY) {
-            Entity::addContains(item);
-        }
-    }
-}
-
-
-/*
     @brief Method to show the player items.
 */
 void Player::showInventory() const {
@@ -70,4 +57,42 @@ void Player::showInventory() const {
         std::cout << "  " << i << "   " << it->getName() << " : " << it->getDescription()<<"     " << std::endl;
     }
     std::cout << "==================================================" << std::endl;
+}
+
+
+/*
+    @brief Method to take an item from the room.
+    @param command Vector that contains the command entered by the player.
+*/
+void Player::takeItem(const std::vector<std::string>& command) {
+    if (command.size() == 2) {
+        for (const auto& it : Creature::getLocation()->getContains()) {
+            if (it->getType() == EntityType::ITEM) {
+                if (it->getName() == command[1]) {
+                    addContains(it);
+                    Creature::getLocation()->removeContains(it);
+                }
+            }
+        }
+    }
+}
+
+
+/*
+    @brief Method to drop an item in the room.
+    @param command Vector that contains the command entered by the player.
+*/
+void Player::dropItem(const std::vector<std::string>& command) {
+    if (command.size() == 2) {
+        if (!Creature::getContains().empty()) {
+            for (const auto& it : Creature::getContains()) {
+                if (it->getType() == EntityType::ITEM) {
+                    if (it->getName() == command[1]) {
+                        Creature::getLocation()->addContains(it);
+                        removeContains(it);
+                    }
+                }
+            }
+        }
+    }
 }
