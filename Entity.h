@@ -3,6 +3,7 @@
 
 #include <iostream>
 #include <list>
+#include <vector>
 #include <string>
 
 //Enum with the types of entities.
@@ -26,10 +27,14 @@ class Entity {
 
 	public:
 		Entity();
-		Entity(const std::string& name, const std::string& description);
+		Entity(const std::string& name, const std::string& description, EntityType type);
 		virtual ~Entity();
 
 		virtual void Update();
+
+		EntityType getType() const { return type; } //Method to get the type of entity.
+		std::string getName() const { return name; } //Method to get the name entity.
+		std::string getDescription() const { return description; } //Method to get the description entity.
 };
 
 #endif // !ENTITY_H

@@ -2,19 +2,24 @@
 #define WORLD_H
 
 #include "Exit.h"
+#include "Player.h"
 #include <vector>
 
 
 class World{
 	private:
+		Player* player;
 		std::vector<Entity*> entities;
 	public:
 		World();
-		World(std::vector<Entity*> entities);
+		World(Player* player, std::vector<Entity*> entities);
 		~World();
 
 		void createWorld();
 		void processCommand(const std::vector<std::string> &command);
+
+
+		void movePlayer(const std::vector<std::string>& command) const;
 };
 
 #endif // !WORLD_H

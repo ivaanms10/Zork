@@ -12,15 +12,15 @@ Entity::Entity() : type(EntityType::ENTITY), name(""), description("") {
 	@brief Parameterized constructor of the Entity class.
 	@param name Name of the entity.
 	@param description Description of the entity.
-
+	@param type Type of entity.
 */
-Entity::Entity(const std::string& name, const std::string& description) : type(EntityType::ENTITY), name(name), description(description) {
+Entity::Entity(const std::string& name, const std::string& description, EntityType type) : type(type), name(name), description(description) {
 
 }
 
 
 /*
-	@brief Destroyer of the Entity class.
+	@brief Destructor of the Entity class.
 */
 Entity::~Entity() {
 
