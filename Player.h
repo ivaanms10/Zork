@@ -3,16 +3,18 @@
 
 #include "Creature.h"
 
-static const int MAX_HEALTH = 100;
-
 class Player : public Creature{
 	private:
-		int shield;
+		int numKills = 0;
+		int  numDeath = 0;
+		int numGold = 0; //Gold to buy new Items.
 
 	public:
 		Player();
 		Player(const std::string& name, Room* location);
 		~Player();
+
+		void stats() const;
 
 };
 

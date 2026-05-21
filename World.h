@@ -8,10 +8,11 @@
 
 class World{
 	private:
+		Player* player;
 		std::vector<Entity*> entities;
 	public:
 		World();
-		World(std::vector<Entity*> entities);
+		World(Player* player, std::vector<Entity*> entities);
 		~World();
 
 		void createWorld();

@@ -3,7 +3,7 @@
 /*
 	@brief Default constructor of the World class.
 */
-World::World() {
+World::World() : player(nullptr){
 	createWorld();
 }
 
@@ -12,7 +12,7 @@ World::World() {
 	@brief Parameterized constructor of the World class.
 	@param entities Vector that contains the entities of the world.
 */
-World::World(std::vector<Entity*> entities) : entities(entities){
+World::World(Player* player, std::vector<Entity*> entities) : player(player), entities(entities){
 	createWorld();
 }
 
@@ -47,7 +47,7 @@ void World::createWorld() {
 	Exit* exit5 = new Exit(DirectionType::WEST, room4, room7); //Great Hall-Locked Treasure
 	Exit* exit6 = new Exit(DirectionType::NORTH, room6, room3); //Smuggler's Cove-Sunken Garden
 
-	Player* player1 = new Player("Z1Tr0k", room1);
+	player = new Player("Z1Tr0k", room1);
 
 	entities.push_back(room1); entities.push_back(room2); entities.push_back(room3); entities.push_back(room4); 
 	entities.push_back(room5); entities.push_back(room6); entities.push_back(room7);
@@ -55,7 +55,7 @@ void World::createWorld() {
 	entities.push_back(exit1); entities.push_back(exit2); entities.push_back(exit3); 
 	entities.push_back(exit4); entities.push_back(exit5); entities.push_back(exit6);
 
-	entities.push_back(player1);
+	entities.push_back(player);
 }
 
 
@@ -66,8 +66,10 @@ void World::createWorld() {
 void World::processCommand(const std::vector<std::string>& command) {
 	if (command.empty()) {
 		return;
-	}else if (command[0] == "Command") {
+	}else if (command[0] == "Command" ) {
 		std::cout << "Exit: Use to finish the game." << std::endl;
 		std::cout << "There are no commands available right now." << std::endl;
+	}else if (command[0] == "Stats") {
+		player->stats();
 	}
 }
