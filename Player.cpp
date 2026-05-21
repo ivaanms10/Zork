@@ -39,29 +39,35 @@ void Player::statsPlayer() const{
     std::cout << " SHIELD: " << Creature::getShield() << " / 100"     << std::endl;
 
     std::cout << "--------------------------------------------------" << std::endl;
-    std::cout << " MARCADOR:\n";
-    std::cout << " Kills:   " << numKills << "                 Muertes: " << numDeath << std::endl;
+    std::cout << " Kills:   " << numKills << "                 Death: " << numDeath << std::endl;
     std::cout << " Gold:  " << numGold << std::endl;
     std::cout << "==================================================" << std::endl;
 }
 
 
+/*
+    @brief Method to add an item to the player inventory.
+    @item item Item to be added to the inventory
+*/
 void Player::takeItem(Item* item) {
     if (item != nullptr) {
-        if (inventory.size() <= MAX_ITEM_INVENTORY) {
-            inventory.push_back(item);
+        if (Entity::getContains().size() <= MAX_ITEM_INVENTORY) {
+            Entity::addContains(item);
         }
     }
 }
 
 
+/*
+    @brief Method to show the player items.
+*/
 void Player::showInventory() const {
     std::cout << "==================================================" << std::endl;
-    std::cout << "                     INVENTORY            "<<inventory.size()<<"/"<<MAX_ITEM_INVENTORY<<"              " << std::endl;
+    std::cout << "                     INVENTORY            "<<Entity::getContains().size()<<"/"<<MAX_ITEM_INVENTORY<<"              " << std::endl;
     std::cout << "==================================================" << std::endl;
     int i = 1;
-    for (const auto& it : inventory) {
-        std::cout << "    " << i << "         " << it->getName() << "               " << std::endl;
+    for (const auto& it : Entity::getContains()) {
+        std::cout << "  " << i << "   " << it->getName() << " : " << it->getDescription()<<"     " << std::endl;
     }
     std::cout << "==================================================" << std::endl;
 }

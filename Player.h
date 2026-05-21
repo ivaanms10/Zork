@@ -8,7 +8,6 @@ static const int MAX_ITEM_INVENTORY = 5;
 
 class Player : public Creature{
 	private:
-		std::list<Item*> inventory;
 		int numKills = 0;
 		int numDeath = 0;
 		int numGold = 0; //Gold to buy new Items.
