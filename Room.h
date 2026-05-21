@@ -13,6 +13,11 @@ class Room : public Entity{
 		~Room();
 
 		void Update();
+		
+		void showRoom() const;
+
+		void addEntity(Entity* entity) { Entity::addContains(entity); } //Method to add a new entity to the room.
+
 };
 
 #endif // !ROOM_H

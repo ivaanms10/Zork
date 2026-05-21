@@ -84,10 +84,12 @@ void World::processCommand(const std::vector<std::string>& command) {
 		player->statsPlayer();
 	}else if (command[0] == "Go") {
 		movePlayer(command);
-	}else if (command[0] == "Show") {
+	}else if (command[0] == "Show" && command[1] == "Inventory") {
 		player->showInventory();
 	}else if (command[0] == "Take") {
 		takeItem(command);
+	}else if (command[0] == "Show" && command[1] == "Room") {
+		player->getLocation()->showRoom();
 	}
 }
 
