@@ -65,7 +65,7 @@ void World::createWorld() {
 	std::vector<Item*> allItems = { item1, item2, item3, item4 };
 
 
-	item1->addContains(item2); item2->addContains(item3);
+	item1->addContains(item2); item1->addContains(item3);
 	room4->addContains(item4);
 
 	allRooms[rand() % allRooms.size()]->addContains(item1);
@@ -113,6 +113,8 @@ void World::processCommand(const std::vector<std::string>& command) {
 		player->dropItem(command);
 	}else if (command[0] == "show" && command[1] == "room") {
 		player->getLocation()->showRoom();
+	}else if (command[0] == "open" && command[1] == "chest") {
+		player->openChest(command);
 	}
 }
 

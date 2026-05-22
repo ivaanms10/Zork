@@ -21,6 +21,7 @@ class Player : public Creature{
 		void takeItem(const std::vector<std::string>& command);
 		void dropItem(const std::vector<std::string>& command);
 		void showInventory() const;
+		void openChest(const std::vector<std::string>& command);
 };
 
 #endif // !PLAYER_H

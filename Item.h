@@ -29,6 +29,8 @@ class Item : public Entity{
 		Item();
 		Item(const std::string& name, const std::string& description, EntityType type, ItemType iType, const int& amount, const int& value);
 		~Item();
+
+		ItemType getItemType() const { return type; } //Method to get the type of item.
 };
 
 #endif // !ITEM_H

@@ -96,3 +96,23 @@ void Player::dropItem(const std::vector<std::string>& command) {
         }
     }
 }
+
+
+/*
+    @brief Method to open a chest and drop the items from the chest into the room.
+    @param command Vector that contains the command entered by the player.
+*/
+void Player::openChest(const std::vector<std::string>& command) {
+    for (const auto& it : Creature::getLocation()->getContains()) {
+        if (it->getType() == EntityType::ITEM) {
+            Item* item = dynamic_cast<Item*>(it);
+
+            if (item->getItemType() == ItemType::CHEST) {
+                for (const auto& iterator : item->getContains()) {
+                    Creature::getLocation()->addContains(iterator);
+                    item->removeContains(iterator);
+                }
+            }
+        }
+    }
+}
