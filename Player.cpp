@@ -58,7 +58,7 @@ void Player::showInventory() const {
         int i = 1;
         for (const auto& it : getContains()) {
             Item* item = dynamic_cast<Item*>(it);
-            std::cout << "  ->  " << item->getName() << " : " << item->getDescription() << "   "<<item->getAmount()<<"  " << std::endl;
+            std::cout << "  ->  " << item->getName() << " : " << item->getDescription() << "   "<<item->getAmount()<<" / "<<item->getMaxAmount() << std::endl;
         }
 
         if (selectedItem != nullptr) {
@@ -78,15 +78,51 @@ void Player::takeItem(const std::vector<std::string>& command) {
     if (command.size() > 1) {
         for (const auto& it : getLocation()->getContains()) {
             if (it->getType() == EntityType::ITEM) {
-                Item* item = dynamic_cast<Item*>(it);
-                if (it->getName() == Utils::getFullNameItem(command)) {
-                    if (item->getItemType() != ItemType::CHEST) {
-                        addContains(it);
-                        getLocation()->removeContains(it);
-                        break;
-                    } else {
-                        std::cout << "You can't take the chest. " << std::endl;
-                        break;
+                Item* itemRoom = dynamic_cast<Item*>(it);
+
+                if (existItem(itemRoom)) {
+                    
+                    for (const auto& it2 : getContains()) {
+                        if (it2->getType() == EntityType::ITEM) {
+                            Item* itemInventory = dynamic_cast<Item*>(it2);
+
+                            if (itemInventory->getName() == Utils::getFullNameItem(command)) {
+                                int newAmount = itemInventory->getAmount() + itemRoom->getAmount();
+
+                                if (itemInventory->getAmount() == itemInventory->getMaxAmount()) {
+                                    if (getContains().size() < MAX_ITEM_INVENTORY) {
+                                        addContains(itemRoom);
+                                    }else {
+                                        std::cout << "You can't take more items because the inventory is full." << std::endl;
+                                    }
+                                } else if (newAmount > itemInventory->getMaxAmount()) {
+                                    int difAmount = newAmount - itemInventory->getMaxAmount();
+
+                                    if (getContains().size() < MAX_ITEM_INVENTORY) {
+                                        itemInventory->setAmount(itemInventory->getMaxAmount());
+                                        itemRoom->setAmount(difAmount);
+                                        addContains(itemRoom);
+                                    } else {
+                                        itemInventory->setAmount(itemInventory->getMaxAmount());
+                                        itemRoom->setAmount(difAmount);
+                                    }
+                                } else {
+                                    itemInventory->setAmount(newAmount);
+                                    getLocation()->getContains().remove(itemRoom);
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    if (itemRoom->getName() == Utils::getFullNameItem(command)) {
+                        if (itemRoom->getItemType() != ItemType::CHEST) {
+                            addContains(it);
+                            getLocation()->removeContains(it);
+                            break;
+                        } else {
+                            std::cout << "You can't take the chest. " << std::endl;
+                            break;
+                        }
                     }
                 }
             }
@@ -158,7 +194,10 @@ void Player::selectItem(const std::vector<std::string>& command) {
     }
 }
 
-
+/*
+    @brief Method to use the item selected.
+    @param command Vector that contains the command entered by the player.
+*/
 void Player::useItem(const std::vector<std::string>& command) {
     if (command.size() > 1) {
         if (selectedItem != nullptr) {
@@ -229,4 +268,21 @@ void Player::decreaseAmountItem() {
         removeContains(selectedItem);
         selectedItem = nullptr;
     }
+}
+
+
+/*
+    @brief Method to determine if an item is already in the inventory or not.
+    @param item Item we are looking for in the inventory.
+    return True if the item is already in the inventory, or false if the item isn't in the inventory.
+*/
+bool Player::existItem(Item* item) {
+    if (item != nullptr) {
+        for (const auto& it : getContains()) {
+            if (it->getName() == item->getName()) {
+                return true;
+            }
+        }
+    }
+    return false;
 }

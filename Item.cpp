@@ -28,3 +28,43 @@ Item::Item(const std::string& name, const std::string& description, EntityType t
 Item::~Item() {
 
 }
+
+
+/*
+    @brief Method to get the max amount of an item.
+    @return The max amount of the item.
+*/
+int Item::getMaxAmount() const {
+    switch (this->type) {
+        case ItemType::CHEST:
+            return MAX_CHEST;
+
+        case ItemType::BIG_SHIELD:
+            return MAX_BIG;
+
+        case ItemType::SMALL_SHIELD:
+            return MAX_SMALL; 
+
+        case ItemType::KIT:
+            return MAX_KIT;
+
+        case ItemType::BANDAGES:
+            return MAX_BANDAGES;
+
+        case ItemType::RIFLE:
+            return MAX_RIFLE;
+
+        case ItemType::SHOTGUN:
+            return MAX_SHOTGUN;
+        
+        case ItemType::UTILITY:
+            return MAX_UTILITY;
+
+        case ItemType::AMMUNITION:
+            return MAX_AMMUNATION;
+        
+        case ItemType::GOLD:
+            return MAX_GOLD;
+    }
+    return 1;
+}

@@ -60,13 +60,16 @@ void World::createWorld() {
 	Item* item2 = new Item("M4", "Rifle to kill enemies", EntityType::ITEM, ItemType::RIFLE, 1, 25);
 	Item* item3 = new Item("Big Shield", "Shield that health 50", EntityType::ITEM, ItemType::BIG_SHIELD, 1, 50);
 	Item* item4 = new Item("Small Shield", "Shield that health 25", EntityType::ITEM, ItemType::SMALL_SHIELD, 3, 25);
+	Item* item5 = new Item("Small Shield", "Shield that health 25", EntityType::ITEM, ItemType::SMALL_SHIELD, 3, 25);
+	Item* item6 = new Item("Small Shield", "Shield that health 25", EntityType::ITEM, ItemType::SMALL_SHIELD, 3, 25);
+
 
 
 	item1->addContains(item2); item1->addContains(item3);
-	room4->addContains(item4); room3->addContains(item1);
+	room4->addContains(item4); room3->addContains(item1); room1->addContains(item5); room3->addContains(item6);
 	
 
-	player = new Player("Z1Tr0k", "First player playing zork game.", room1);
+	player = new Player("Ivan", "First player playing zork game.", room1);
 
 	entities.push_back(room1); entities.push_back(room2); entities.push_back(room3); entities.push_back(room4); 
 	entities.push_back(room5); entities.push_back(room6); entities.push_back(room7);
@@ -74,7 +77,7 @@ void World::createWorld() {
 	entities.push_back(exit1); entities.push_back(exit2); entities.push_back(exit3); entities.push_back(exit4); entities.push_back(exit5); entities.push_back(exit6); entities.push_back(exit7);
 	entities.push_back(exit8); entities.push_back(exit9); entities.push_back(exit10); entities.push_back(exit11); entities.push_back(exit12); entities.push_back(exit13);
 	
-	entities.push_back(item1); 	entities.push_back(item2); 	entities.push_back(item3); 	entities.push_back(item4);
+	entities.push_back(item1); 	entities.push_back(item2); 	entities.push_back(item3); 	entities.push_back(item4); entities.push_back(item5); entities.push_back(item6);
 
 	entities.push_back(player);
 }

@@ -26,7 +26,7 @@ class Player : public Creature{
 		void selectItem(const std::vector<std::string>& command);
 		void useItem(const std::vector<std::string>& command);
 		void decreaseAmountItem();
-
+		bool existItem(Item* item);
 };
 
 #endif // !PLAYER_H
