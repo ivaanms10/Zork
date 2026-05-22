@@ -8,6 +8,7 @@ static const int MAX_ITEM_INVENTORY = 5;
 
 class Player : public Creature{
 	private:
+		Item* selectedItem = nullptr;
 		int numKills = 0;
 		int numDeath = 0;
 		int numGold = 0; //Gold to buy new Items.
@@ -22,6 +23,10 @@ class Player : public Creature{
 		void dropItem(const std::vector<std::string>& command);
 		void showInventory() const;
 		void openChest(const std::vector<std::string>& command);
+		void selectItem(const std::vector<std::string>& command);
+		void useItem(const std::vector<std::string>& command);
+		void decreaseAmountItem();
+
 };
 
 #endif // !PLAYER_H

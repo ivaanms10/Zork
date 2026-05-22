@@ -44,11 +44,11 @@ void Room::showRoom() const {
 	std::cout << " Name: " << Entity::getName() << "                " << std::endl;
 	std::cout << " Description: " << Entity::getDescription() << "  " << std::endl;
 	std::cout << "--------------------------------------------------" << std::endl << std::endl;
-	if (Entity::getContains().empty()) {
+	if (getContains().empty()) {
 		std::cout << "               The room is empty.              " << std::endl << std::endl;
 	}else {
 		int i = 1;
-		for (const auto& it : Entity::getContains()) {
+		for (const auto& it : getContains()) {
 			std::cout << "  " << i << "   " << it->getName() << " : " << it->getDescription() << "     " << std::endl;
 		}
 	}

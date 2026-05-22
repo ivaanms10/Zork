@@ -4,6 +4,8 @@
 #include "Room.h"
 
 static const int MAX_HEALTH = 100;
+static const int MAX_BANDAGES_HEALTH = 75;
+static const int MAX_SMALL_SHIELD = 50;
 static const int MAX_SHIELD = 100;
 
 class Creature : public Entity{
@@ -23,6 +25,8 @@ class Creature : public Entity{
 		Room* getLocation() const { return location; } //Method to get the creature room.
 
 		void setLocation(Room* newLocation) { this->location = newLocation; } //Method to set a new creature room.
+		void setShield(const int& shield) { this->shield = shield; } //Method to set a new value of shield.
+		void setHealth(const int& health) { this->health = health; } //Method to set a new value of health.
 
 };
 

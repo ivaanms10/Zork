@@ -39,7 +39,6 @@ void World::createWorld() {
 	Room* room5 = new Room("Rocky Cavern", "A damp limestone cave with glittering stalactites and gravel floors.");
 	Room* room6 = new Room("Smuggler's Cove", "A hidden sandy shore with a solitary rowboat resting near the water.");
 	Room* room7 = new Room("Locked Treasure", "A reinforced stone vault holding a massive, heavily padlocked chest.");
-	std::vector<Room*> allRooms = { room1, room2, room3, room4, room5, room6, room7 };
 
 
 	Exit* exit1 = new Exit(DirectionType::NORTH, room1, room3,"Exit 1", "Entryway-Sunken Garden"); //Entryway-Sunken Garden
@@ -55,20 +54,17 @@ void World::createWorld() {
 	Exit* exit11 = new Exit(DirectionType::NORTH, room7, room2,"Exit 11","Locked Treasure-Ancient Library"); //Locked Treasure-Ancient Library
 	Exit* exit12 = new Exit(DirectionType::EAST, room5, room6,"Exit 12","Rocky Cavern-Smuggler's Cove");
 	Exit* exit13 = new Exit(DirectionType::WEST,room6, room5,"Exit 13","Smuggler's Cove-Rocky Cavern");
-	std::vector<Exit*> allExits = { exit1, exit2, exit3, exit4, exit5, exit6, exit7, exit8, exit9, exit10, exit11, exit12, exit13 };
-
+	
 
 	Item* item1 = new Item("Big Chest", "Chest that contains a weapon and a curative item", EntityType::ITEM, ItemType::CHEST, 1, 1);
 	Item* item2 = new Item("M4", "Rifle to kill enemies", EntityType::ITEM, ItemType::RIFLE, 1, 25);
 	Item* item3 = new Item("Big Shield", "Shield that health 50", EntityType::ITEM, ItemType::BIG_SHIELD, 1, 50);
-	Item* item4 = new Item("Small Shield", "Shield that health 25", EntityType::ITEM, ItemType::SMALL_SHIELD, 1, 25);
-	std::vector<Item*> allItems = { item1, item2, item3, item4 };
+	Item* item4 = new Item("Small Shield", "Shield that health 25", EntityType::ITEM, ItemType::SMALL_SHIELD, 3, 25);
 
 
 	item1->addContains(item2); item1->addContains(item3);
-	room4->addContains(item4);
-
-	allRooms[rand() % allRooms.size()]->addContains(item1);
+	room4->addContains(item4); room3->addContains(item1);
+	
 
 	player = new Player("Z1Tr0k", "First player playing zork game.", room1);
 
@@ -115,6 +111,10 @@ void World::processCommand(const std::vector<std::string>& command) {
 		player->getLocation()->showRoom();
 	}else if (command[0] == "open" && command[1] == "chest") {
 		player->openChest(command);
+	}else if (command[0] == "select") {
+		player->selectItem(command);
+	}else if (command[0] == "use") {
+		player->useItem(command);
 	}
 }
 

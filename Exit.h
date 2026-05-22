@@ -2,7 +2,6 @@
 #define EXIT_H
 
 #include "Room.h"
-#include <string>
 
 //Enum with the 4 possible directions.
 enum class DirectionType {

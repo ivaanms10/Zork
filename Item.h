@@ -31,6 +31,11 @@ class Item : public Entity{
 		~Item();
 
 		ItemType getItemType() const { return type; } //Method to get the type of item.
+		int getAmount() const { return amount; } //Method to get the amount of the item.
+		int getValue() const { return value; } //Method to get the value of the item.
+		
+		void increaseAmount(const int& amount) { this->amount += amount; } //Method to increase the amount.
+		void decreaseAmount() { this->amount -= 1; } //Method to decrease the amount.
 };
 
 #endif // !ITEM_H
