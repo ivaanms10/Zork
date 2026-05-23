@@ -1,18 +1,16 @@
 #include "World.h"
+#include "Player.h"
+#include "Room.h"
+#include "Exit.h"
+#include "Item.h"
+#include <random>
+#include <algorithm>
+#include <iostream>
 
 /*
 	@brief Default constructor of the World class.
 */
 World::World() : player(nullptr){
-	createWorld();
-}
-
-
-/*
-	@brief Parameterized constructor of the World class.
-	@param entities Vector that contains the entities of the world.
-*/
-World::World(Player* player, std::vector<Entity*> entities) : player(player), entities(entities){
 	createWorld();
 }
 
@@ -69,7 +67,7 @@ void World::createWorld() {
 	room4->addContains(item4); room3->addContains(item1); room1->addContains(item5); room3->addContains(item6);
 	
 
-	player = new Player("Ivan", "First player playing zork game.", room1);
+	player = new Player("Ivan", "First player playing zork game.", room1, this);
 
 	entities.push_back(room1); entities.push_back(room2); entities.push_back(room3); entities.push_back(room4); 
 	entities.push_back(room5); entities.push_back(room6); entities.push_back(room7);
@@ -90,14 +88,15 @@ void World::createWorld() {
 void World::processCommand(const std::vector<std::string>& command) {
 	if (command.empty()) {
 		return;
-	}else if (command[0] == "Command" ) {
+	}else if (command[0] == "command" ) {
 		std::cout << "\n======= AVAILABLE COMMANDS =======" << std::endl;
-		std::cout << "Stats:          Shows player information." << std::endl;
-		std::cout << "Go [Direction]: Moves the player towards an exit (e.g., Go North)." << std::endl;
-		std::cout << "Show Room:      Displays the room description, exits, and items on the floor." << std::endl;
-		std::cout << "Show Inventory: Opens your backpack to view your carried items." << std::endl;
-		std::cout << "Take [Item]:    Picks up an item from the floor." << std::endl;
-		std::cout << "Drop [Item]:    Drops an item to the floor." << std::endl;
+		std::cout << "stats:          Shows player information." << std::endl;
+		std::cout << "go [Direction]: Moves the player towards an exit (e.g., Go North)." << std::endl;
+		std::cout << "show room:      Displays the room description, exits, and items on the floor." << std::endl;
+		std::cout << "show inventory: Opens your backpack to view your carried items." << std::endl;
+		std::cout << "take [Item]:    Picks up an item from the floor." << std::endl;
+		std::cout << "drop: Drops the item selected to the floor." << std::endl;
+		std::cout << "use: Use the selected item." << std::endl;
 		std::cout << "Exit:           Closes the game safely." << std::endl;
 		std::cout << "====================================\n" << std::endl;
 	}else if (command[0] == "stats") {
@@ -108,7 +107,7 @@ void World::processCommand(const std::vector<std::string>& command) {
 		player->showInventory();
 	}else if (command[0] == "take") {
 		player->takeItem(command);
-	}else if (command[0] == "drop") {
+	}else if (command.size() > 2 && command[0] == "drop") {
 		player->dropItem(command);
 	}else if (command[0] == "show" && command[1] == "room") {
 		player->getLocation()->showRoom();
@@ -117,15 +116,18 @@ void World::processCommand(const std::vector<std::string>& command) {
 	}else if (command[0] == "select") {
 		player->selectItem(command);
 	}else if (command[0] == "use") {
-		player->useItem(command);
+		player->useItemSelected();
+	}else if (command[0] == "drop") {
+		player->dropItemSelected(command);
 	}
 }
+
 
 /*
 	@brief Method to move the player around the map.
 	@param command Vector that contains the command entered by the player.
 */
-void World::movePlayer(const std::vector<std::string>& command) const{
+void World::movePlayer(const std::vector<std::string>& command){
 	if (command.size() == 2) {
 		for (const auto& it : entities) {
 			if (it->getType() == EntityType::EXIT) {
@@ -139,5 +141,17 @@ void World::movePlayer(const std::vector<std::string>& command) const{
 				}
 			}
 		}
+	}
+}
+
+
+/*
+	@brief Method to remove and delete an entity from the world.
+	@param entity Entity that will be deleted.
+*/
+void World::removeEntity(Entity* entity) {
+	if (entity != nullptr) {
+		entities.erase(std::remove(entities.begin(), entities.end(), entity), entities.end());
+		delete entity;
 	}
 }

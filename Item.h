@@ -2,6 +2,7 @@
 #define ITEM_H
 
 #include "Entity.h"
+#include <string>
 
 static const int MAX_CHEST = 1;
 static const int MAX_BIG = 3;
@@ -38,7 +39,7 @@ class Item : public Entity{
 
 	public:
 		Item();
-		Item(const std::string& name, const std::string& description, EntityType type, ItemType iType, const int& amount, const int& value);
+		Item(const std::string& name, const std::string& description, EntityType type, ItemType iType, int amount, int value);
 		~Item();
 
 		ItemType getItemType() const { return type; } //Method to get the type of item.
@@ -46,7 +47,7 @@ class Item : public Entity{
 		int getValue() const { return value; } //Method to get the value of the item.
 		int getMaxAmount() const;
 		
-		void setAmount(const int& amount) { this->amount = amount; } //Method to set a new amount.
+		void setAmount(int amount) { this->amount = amount; } //Method to set a new amount.
 		void decreaseAmount() { this->amount -= 1; } //Method to decrease the amount.
 };
 

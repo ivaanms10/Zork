@@ -1,11 +1,8 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-#include <iostream>
 #include <list>
-#include <vector>
 #include <string>
-#include "Utils.h"
 
 //Enum with the types of entities.
 enum class EntityType{

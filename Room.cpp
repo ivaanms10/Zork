@@ -1,4 +1,6 @@
 #include "Room.h"
+#include "Item.h"
+#include <iostream>
 
 /*
 	@brief Default constructor of the Room class.
@@ -49,7 +51,11 @@ void Room::showRoom() const {
 	}else {
 		int i = 1;
 		for (const auto& it : getContains()) {
-			std::cout << "  " << i << "   " << it->getName() << " : " << it->getDescription() << "     " << std::endl;
+			Item* item = dynamic_cast<Item*>(it);
+
+			if (item != nullptr) {
+				std::cout << "  ->  " << item->getName() << " : " << item->getDescription() << "   " << item->getAmount() << " / " << item->getMaxAmount() << std::endl;
+			}
 		}
 	}
     std::cout << "==================================================" << std::endl;

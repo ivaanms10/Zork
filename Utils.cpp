@@ -1,4 +1,6 @@
 #include "Utils.h"
+#include <sstream>
+#include <iostream>
 
 /*
 	@brief Method to slice the command entered by the player.
@@ -24,11 +26,22 @@ std::vector<std::string> Utils::getPartCommand() {
 */
 std::string Utils::getFullNameItem(const std::vector<std::string>& command) {
 	std::string fullName = "";
-	for (int i = 1; i < command.size(); ++i) {
-		fullName = fullName + command[i];
-		if (i < command.size() - 1) {
-			fullName = fullName + " ";
+	try {
+		int num = std::stoi(command.back());
+		for (int i = 1; i < command.size()-1; ++i) {
+			fullName += command[i];
+			if (i < command.size() - 2) {
+				fullName += " ";
+			}
+		}
+	}catch (const std::invalid_argument& e) {
+		for (int i = 1; i < command.size(); ++i) {
+			fullName += command[i];
+			if (i < command.size() - 1) {
+				fullName += " ";
+			}
 		}
 	}
+	
 	return fullName;
 }

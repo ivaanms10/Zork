@@ -1,4 +1,5 @@
 #include "Exit.h"
+#include "Room.h"
 
 /*
 	@brief Default constructor of the Exit class.
@@ -16,7 +17,7 @@ Exit::Exit() : Entity("","",EntityType::EXIT), direction(DirectionType::NORTH), 
 	@param name Name of the exit.
 	@param description Description of the exit.
 */
-Exit::Exit(DirectionType direction, Room* source, Room* destination, const std::string& name, const std::string&  description) : Entity(name, description, EntityType::EXIT), direction(direction), source(source), destination(destination) {
+Exit::Exit(DirectionType direction, Room* source, Room* destination, const std::string& name, const std::string& description) : Entity(name, description, EntityType::EXIT), direction(direction), source(source), destination(destination) {
 
 }
 
@@ -33,13 +34,17 @@ Exit::~Exit() {
 	@return String with the direction.
 */
 std::string Exit::getDirectionType() const{
-	if (direction == DirectionType::NORTH) {
-		return "North";
-	}else if (direction == DirectionType::SOUTH) {
-		return "South";
-	}else if (direction == DirectionType::EAST) {
-		return "East";
-	}else {
-		return "West";
+	switch (direction) {
+		case DirectionType::NORTH:
+			return "North";
+
+		case DirectionType::SOUTH:
+			return "South";
+
+		case DirectionType::EAST:
+			return "East";
+
+		case DirectionType::WEST:
+			return "West";
 	}
 }

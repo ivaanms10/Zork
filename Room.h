@@ -2,7 +2,7 @@
 #define ROOM_H
 
 #include "Entity.h"
-
+#include <string>
 
 class Room : public Entity{
 	private:

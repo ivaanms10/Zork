@@ -1,9 +1,14 @@
 #include "Player.h"
+#include "Item.h"  
+#include "Room.h"  
+#include "World.h"
+#include "Utils.h"
+#include <iostream>
 
 /*
 	@brief Default constructor of the Player class.
 */
-Player::Player() : Creature("", "", EntityType::PLAYER, nullptr, MAX_HEALTH, 0), selectedItem(nullptr), numKills(0), numDeath(0), numGold(0) {
+Player::Player() : Creature(nullptr, "", "", EntityType::PLAYER, nullptr, MAX_HEALTH, 0), selectedItem(nullptr), numKills(0), numDeath(0), numGold(0) {
     
 }
 
@@ -12,8 +17,9 @@ Player::Player() : Creature("", "", EntityType::PLAYER, nullptr, MAX_HEALTH, 0),
 	@brief Parameterized constructor of the Player class.
 	@param name Player name.
 	@param location Room where the player is located.
+    @param world Pointer to the world where the player is located.
 */
-Player::Player(const std::string& name, const std::string& description, Room* location) : Creature(name, description, EntityType::PLAYER, location, MAX_HEALTH, 0), selectedItem(nullptr), numKills(0), numDeath(0), numGold(0){
+Player::Player(const std::string& name, const std::string& description, Room* location, World* world) : Creature(world, name, description, EntityType::PLAYER, location, MAX_HEALTH, 0), selectedItem(nullptr), numKills(0), numDeath(0), numGold(0){
 
 }
 
@@ -55,10 +61,12 @@ void Player::showInventory() const {
     if (getContains().empty()) {
         std::cout << "               The inventory is empty.              " << std::endl << std::endl;
     } else {
-        int i = 1;
         for (const auto& it : getContains()) {
             Item* item = dynamic_cast<Item*>(it);
-            std::cout << "  ->  " << item->getName() << " : " << item->getDescription() << "   "<<item->getAmount()<<" / "<<item->getMaxAmount() << std::endl;
+
+            if (item != nullptr) {
+                std::cout << "  ->  " << item->getName() << " : " << item->getDescription() << "   " << item->getAmount() << " / " << item->getMaxAmount() << std::endl;
+            }
         }
 
         if (selectedItem != nullptr) {
@@ -75,55 +83,52 @@ void Player::showInventory() const {
     @param command Vector that contains the command entered by the player.
 */
 void Player::takeItem(const std::vector<std::string>& command) {
-    if (command.size() > 1) {
-        for (const auto& it : getLocation()->getContains()) {
-            if (it->getType() == EntityType::ITEM) {
-                Item* itemRoom = dynamic_cast<Item*>(it);
+    for (const auto& it : getLocation()->getContains()) {
+        if (it->getType() == EntityType::ITEM) {
+            Item* itemRoom = dynamic_cast<Item*>(it);
 
-                if (existItem(itemRoom)) {
-                    
-                    for (const auto& it2 : getContains()) {
-                        if (it2->getType() == EntityType::ITEM) {
-                            Item* itemInventory = dynamic_cast<Item*>(it2);
+            if (itemRoom->getName() == Utils::getFullNameItem(command)) {
+                Item* itemInventory = existItemInventory(itemRoom);
+                if (itemInventory != nullptr) {
+                    int newAmount = itemInventory->getAmount() + itemRoom->getAmount();
 
-                            if (itemInventory->getName() == Utils::getFullNameItem(command)) {
-                                int newAmount = itemInventory->getAmount() + itemRoom->getAmount();
-
-                                if (itemInventory->getAmount() == itemInventory->getMaxAmount()) {
-                                    if (getContains().size() < MAX_ITEM_INVENTORY) {
-                                        addContains(itemRoom);
-                                    }else {
-                                        std::cout << "You can't take more items because the inventory is full." << std::endl;
-                                    }
-                                } else if (newAmount > itemInventory->getMaxAmount()) {
-                                    int difAmount = newAmount - itemInventory->getMaxAmount();
-
-                                    if (getContains().size() < MAX_ITEM_INVENTORY) {
-                                        itemInventory->setAmount(itemInventory->getMaxAmount());
-                                        itemRoom->setAmount(difAmount);
-                                        addContains(itemRoom);
-                                    } else {
-                                        itemInventory->setAmount(itemInventory->getMaxAmount());
-                                        itemRoom->setAmount(difAmount);
-                                    }
-                                } else {
-                                    itemInventory->setAmount(newAmount);
-                                    getLocation()->getContains().remove(itemRoom);
-                                }
-                            }
+                    if (itemInventory->getAmount() == itemInventory->getMaxAmount()) {
+                        if (getContains().size() < MAX_ITEM_INVENTORY) {
+                            addContains(itemRoom);
+                            getLocation()->removeEntity(itemRoom);
+                        } else {
+                            std::cout << "You can't take more items because the inventory is full." << std::endl;
                         }
-                    }
+                    } else if (newAmount > itemInventory->getMaxAmount()) {
+                        int difAmount = newAmount - itemInventory->getMaxAmount();
+
+                        if (getContains().size() < MAX_ITEM_INVENTORY) {
+                            itemInventory->setAmount(itemInventory->getMaxAmount());
+                            itemRoom->setAmount(difAmount);
+                            addContains(itemRoom);
+                            getLocation()->removeEntity(itemRoom);
+                        } else {
+                            itemInventory->setAmount(itemInventory->getMaxAmount());
+                            itemRoom->setAmount(difAmount);
+                        }
+                    } else {
+                        itemInventory->setAmount(newAmount);
+                        getLocation()->removeEntity(itemRoom);
+                        getWorld()->removeEntity(itemRoom);
+                    }   
+                    break;
                 } else {
-                    if (itemRoom->getName() == Utils::getFullNameItem(command)) {
+                    if (getContains().size() < MAX_ITEM_INVENTORY) {
                         if (itemRoom->getItemType() != ItemType::CHEST) {
                             addContains(it);
-                            getLocation()->removeContains(it);
-                            break;
+                            getLocation()->removeEntity(it);
                         } else {
                             std::cout << "You can't take the chest. " << std::endl;
-                            break;
                         }
+                    } else {
+                        std::cout << "You can't take " << itemRoom->getName() << ". Your inventory is full." << std::endl;
                     }
+                    break;
                 }
             }
         }
@@ -132,15 +137,27 @@ void Player::takeItem(const std::vector<std::string>& command) {
 
 
 /*
-    @brief Method to drop an item in the room.
+    @brief Method to drop an item by its name.
     @param command Vector that contains the command entered by the player.
 */
 void Player::dropItem(const std::vector<std::string>& command) {
     if (command.size() > 1) {
-        if (!getContains().empty()) {
+        try {
+            int amount = std::stoi(command.back());
+            
             for (const auto& it : getContains()) {
                 if (it->getType() == EntityType::ITEM) {
                     if (it->getName() == Utils::getFullNameItem(command)) {
+                        Item* item = dynamic_cast<Item*>(it);
+                        dropItemAmount(amount, item);
+                    }
+                }
+            }
+        } catch (const std::invalid_argument& e) {
+            for (const auto& it : getContains()) {
+                if (it->getType() == EntityType::ITEM) {
+                    if (it->getName() == Utils::getFullNameItem(command)) {
+                        std::cout << it->getName() << " drop succesfully." << std::endl;
                         getLocation()->addContains(it);
                         removeContains(it);
                         break;
@@ -148,6 +165,52 @@ void Player::dropItem(const std::vector<std::string>& command) {
                 }
             }
         }
+    }    
+}
+
+
+/*
+    @brief Method to drop the selected item.
+    @param command Vector that contains the command entered by the player.
+*/
+void Player::dropItemSelected(const std::vector<std::string>& command) {
+    if (selectedItem != nullptr) {
+        if (command.size() == 2) {
+            try {
+
+                int amount = std::stoi(command[1]);
+                dropItemAmount(amount, selectedItem);
+                
+            } catch (const std::invalid_argument& e) {
+                dropItem(command);
+            }
+        } else {
+            std::cout << selectedItem->getName() << " drop succesfully." << std::endl;
+            getLocation()->addContains(selectedItem);
+            removeContains(selectedItem);
+            selectedItem = nullptr;
+        }
+    }
+}
+
+
+/*
+    @brief Method to drop a certain amount of an item.
+    @param amount Amount to be drop from the item.
+    @param item Pointer to the item from which the amount will be dropped.
+*/
+void Player::dropItemAmount(int amount, Item* item) {
+    if (amount >= item->getAmount()) {
+        std::cout << item->getName() << " drop succesfully. "<<amount<<" uds." << std::endl;
+        getLocation()->addContains(item);
+        removeContains(item);
+        item = nullptr;
+    } else if (amount > 0 && amount < item->getAmount()) {
+        std::cout << item->getName() << " drop succesfully. " << amount << " uds." << std::endl;
+        item->setAmount(item->getAmount() - amount);
+        Item* newItem = new Item(item->getName(), item->getDescription(), item->getType(), item->getItemType(), amount, item->getValue());
+        getLocation()->addContains(newItem);
+        getWorld()->addEntity(newItem);
     }
 }
 
@@ -158,15 +221,31 @@ void Player::dropItem(const std::vector<std::string>& command) {
 */
 void Player::openChest(const std::vector<std::string>& command) {
     for (const auto& it : getLocation()->getContains()) {
-        if (it->getType() == EntityType::ITEM) {
-            Item* item = dynamic_cast<Item*>(it);
+        if (it != nullptr && it->getType() == EntityType::ITEM) {
+            Item* chest = dynamic_cast<Item*>(it);
 
-            if (item->getItemType() == ItemType::CHEST) {
-                for (const auto& iterator : item->getContains()) {
-                    getLocation()->addContains(iterator);
-                    item->removeContains(iterator);
+            if (chest != nullptr) {
+                if (chest->getItemType() == ItemType::CHEST) {
+                    std::cout << "==================================================" << std::endl;
+                    std::cout << "               CHEST OPEN CORRECTLY               " << std::endl;
+                    std::cout << "==================================================" << std::endl;
+                    std::cout << " Items                                            " << std::endl;
+                    std::cout << "--------------------------------------------------" << std::endl;
+
+                    while (!chest->getContains().empty()) { // While the chest isn't empty, we continue taking items.
+                        Entity* itemChest = chest->getContains().front();
+                        Item* itemChest2 = dynamic_cast<Item*>(itemChest);
+                        if (itemChest2 != nullptr) {
+                            std::cout << "  ->  " << itemChest2->getName() << " : " << itemChest2->getDescription() << "   " << itemChest2->getAmount() << " uds. " << std::endl;
+                        }
+                        if (itemChest != nullptr) {
+                            getLocation()->addContains(itemChest);
+                            chest->removeContains(itemChest);
+                        }
+                    }
+                    std::cout << "==================================================" << std::endl;
+                    break;
                 }
-                break;
             }
         }
     }
@@ -184,89 +263,100 @@ void Player::selectItem(const std::vector<std::string>& command) {
                 if (it->getType() == EntityType::ITEM) {
                     Item* item = dynamic_cast<Item*>(it);
 
-                    if (item->getName() == Utils::getFullNameItem(command)) {
-                        selectedItem = item;
-                        break;
+                    if (item != nullptr ){
+                        if (item->getName() == Utils::getFullNameItem(command)) {
+                            selectedItem = item;
+                            std::cout<<"You have selected: " << item->getName() << std::endl; 
+                            break;
+                        }
                     }
                 }
             }
         }
     }
 }
+
 
 /*
     @brief Method to use the item selected.
     @param command Vector that contains the command entered by the player.
 */
-void Player::useItem(const std::vector<std::string>& command) {
-    if (command.size() > 1) {
+void Player::useItemSelected() { 
         if (selectedItem != nullptr) {
-            if (selectedItem->getName() == Utils::getFullNameItem(command)) {
-                if (selectedItem->getItemType() == ItemType::BIG_SHIELD) {
-                    int newShield = getShield() + selectedItem->getValue();
 
-                    if (getShield() == MAX_SHIELD) {
-                        std::cout << "You can't take the Big Shield." << std::endl;
-                    } else if (newShield > MAX_SHIELD) {
-                        setShield(MAX_SHIELD);
-                        decreaseAmountItem();
-                    } else {
-                        setShield(newShield);
-                        decreaseAmountItem();
-                    }
+            if (selectedItem->getItemType() == ItemType::BIG_SHIELD) {
+                int newShield = getShield() + selectedItem->getValue();
 
-                } else if (selectedItem->getItemType() == ItemType::SMALL_SHIELD) {
-                    int newShield = getShield() + selectedItem->getValue();
+                if (getShield() == MAX_SHIELD) {
+                    std::cout << "You can't take the Big Shield. You are full shield." << std::endl;
+                } else if (newShield > MAX_SHIELD) {
+                    setShield(MAX_SHIELD);
+                    decreaseAmountItem();
+                    std::cout << "Healing with a Big Shield...." << std::endl;
+                } else {
+                    setShield(newShield);
+                    decreaseAmountItem();
+                    std::cout << "Healing with a Big Shield...." << std::endl;
+                }
 
-                    if (getShield() >= MAX_SMALL_SHIELD) {
-                        std::cout << "You can't take the Small Shield." << std::endl;
-                    } else if(newShield > MAX_SMALL_SHIELD) {
-                        setShield(MAX_SMALL_SHIELD);
-                        decreaseAmountItem();
-                    } else {
-                        setShield(newShield);
-                        decreaseAmountItem();
-                    }
+            } else if (selectedItem->getItemType() == ItemType::SMALL_SHIELD) {
+                int newShield = getShield() + selectedItem->getValue();
 
-                } else if (selectedItem->getItemType() == ItemType::KIT) {
-                    int newHealth = getHealth() + selectedItem->getValue();
+                if (getShield() >= MAX_SMALL_SHIELD) {
+                    std::cout << "You can't take the Small Shield." << std::endl;
+                } else if (newShield > MAX_SMALL_SHIELD) {
+                    setShield(MAX_SMALL_SHIELD);
+                    decreaseAmountItem();
+                    std::cout << "Healing with a Small Shield...." << std::endl;
+                } else {
+                    setShield(newShield);
+                    decreaseAmountItem();
+                    std::cout << "Healing with a Small Shield...." << std::endl;
+                }
 
-                    if (getHealth() == MAX_HEALTH) {
-                        std::cout << "You can't take the Kit." << std::endl;
-                    } else if (newHealth > MAX_HEALTH) {
-                        setShield(MAX_HEALTH);
-                        decreaseAmountItem();
-                    }
+            } else if (selectedItem->getItemType() == ItemType::KIT) {
+                
+                if (getHealth() == MAX_HEALTH) {
+                    std::cout << "You can't take the Kit." << std::endl;
+                } else {
+                    setHealth(MAX_HEALTH);
+                    decreaseAmountItem();
+                    std::cout << "Healing with a Kit...." << std::endl;
+                }
 
-                } else if (selectedItem->getItemType() == ItemType::BANDAGES) {
-                    int newHealth = getHealth() + selectedItem->getValue();
+            } else if (selectedItem->getItemType() == ItemType::BANDAGES) {
+                int newHealth = getHealth() + selectedItem->getValue();
 
-                    if (getHealth() >= MAX_BANDAGES_HEALTH) {
-                        std::cout << "You can't take the Bandages." << std::endl;
-                    } else if (newHealth > MAX_BANDAGES_HEALTH) {
-                        setShield(MAX_BANDAGES_HEALTH);
-                        decreaseAmountItem();
-                    } else {
-                        setShield(newHealth);
-                        decreaseAmountItem();
-                    }
+                if (getHealth() >= MAX_BANDAGES_HEALTH) {
+                    std::cout << "You can't take the Bandages." << std::endl;
+                } else if (newHealth > MAX_BANDAGES_HEALTH) {
+                    setHealth(MAX_BANDAGES_HEALTH);
+                    decreaseAmountItem();
+                    std::cout << "Healing with Bandages...." << std::endl;
+                } else {
+                    setHealth(newHealth);
+                    decreaseAmountItem();
+                    std::cout << "Healing with Bandages...." << std::endl;
                 }
             }
+
         } else {
             std::cout << "You don't have items selected to use." << std::endl;
         }
     }
-}
 
 
 /*
     @brief Method to reduce the amount of an item, if the amount reaches 0, we remove the item.
 */
 void Player::decreaseAmountItem() {
-    selectedItem->decreaseAmount();
-    if (selectedItem->getAmount() == 0) {
-        removeContains(selectedItem);
-        selectedItem = nullptr;
+    if (selectedItem != nullptr) {
+        selectedItem->decreaseAmount();
+        if (selectedItem->getAmount() == 0) {
+            removeContains(selectedItem);
+            getWorld()->removeEntity(selectedItem);
+            selectedItem = nullptr;
+        }
     }
 }
 
@@ -276,13 +366,14 @@ void Player::decreaseAmountItem() {
     @param item Item we are looking for in the inventory.
     return True if the item is already in the inventory, or false if the item isn't in the inventory.
 */
-bool Player::existItem(Item* item) {
+Item* Player::existItemInventory(Item* item) {
     if (item != nullptr) {
         for (const auto& it : getContains()) {
             if (it->getName() == item->getName()) {
-                return true;
+                Item* item = dynamic_cast<Item*>(it);
+                return item;
             }
         }
     }
-    return false;
+    return nullptr;
 }

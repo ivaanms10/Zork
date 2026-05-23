@@ -1,7 +1,10 @@
 #ifndef EXIT_H
 #define EXIT_H
 
-#include "Room.h"
+#include "Entity.h"
+#include <string>
+
+class Room;
 
 //Enum with the 4 possible directions.
 enum class DirectionType {
@@ -15,7 +18,7 @@ enum class DirectionType {
 class Exit : public Entity{
 	private:
 		DirectionType direction;
-		Room* source; 
+		Room* source;
 		Room* destination;
 
 	public:
