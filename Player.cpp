@@ -467,6 +467,7 @@ void Player::movePlayer(const std::vector<std::string>& command) {
                         std::cout << "The exit is blocked. You need " << exit->getKey()->getName() << " to open." << std::endl;
                     } else {
                         setLocation(exit->getDestination());
+                        selectedNPC = nullptr;
                         std::cout << "You've moved to the room " << exit->getDestination()->getName() << std::endl;
                     }
                     break;
@@ -585,4 +586,27 @@ void Player::viewRadar() {
         }
     }
     std::cout << "==================================================" << std::endl;
+}
+
+
+/*
+    @brief Method to buy an item from the NPC seller.
+    @param command Vector that contains the command entered by the player.
+*/
+void Player::buyItemShop(const std::vector<std::string>& command) {
+    if (selectedNPC != nullptr) {
+        if (selectedNPC->getType() == NPCType::SELLER) {
+            if (getContains().size() < MAX_ITEM_INVENTORY) {
+                Item* itemBuy = selectedNPC->buyItem(Utils::getFullNameItem(command, command.size() - 1), getGold());
+
+                if (itemBuy != nullptr) {
+                    addContains(itemBuy);
+                    setGold(getGold() - itemBuy->getPrice());
+                    std::cout << itemBuy->getName() << " purchased successfully. Thank you." << std::endl;
+                }
+            } else {
+                std::cout << "You can't buy the " << Utils::getFullNameItem(command, command.size() - 1) << " because your inventory is full." << std::endl;
+            }
+        }
+    }
 }

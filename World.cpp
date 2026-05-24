@@ -47,6 +47,7 @@ void World::createWorld() {
 	Item* item5 = new Item("Small Shield", "Shield that health 25", EntityType::ITEM, ItemType::SMALL_SHIELD, 3, 25, PRICE_SMALL_SHIELD);
 	Item* item6 = new Item("Small Shield", "Shield that health 25", EntityType::ITEM, ItemType::SMALL_SHIELD, 3, 25, PRICE_SMALL_SHIELD);
 	Item* item7 = new Item("Magic Key", "Key to open blocked exits", EntityType::ITEM, ItemType::KEY, 1, 1, 0);
+	Item* item8 = new Item("M4", "Rifle to kill enemies", EntityType::ITEM, ItemType::RIFLE, 1, 25, PRICE_RIFLE);
 
 
 	Exit* exit1 = new Exit(DirectionType::NORTH, room1, room3,"Exit 1", "Entryway-Sunken Garden", false,nullptr); 
@@ -78,6 +79,8 @@ void World::createWorld() {
 
 	item1->addContains(item2); item1->addContains(item3); item1->addContains(item7);
 	room4->addContains(item4); room3->addContains(item1); room1->addContains(item5); room3->addContains(item6); room1->addContains(npc1);
+
+	npc1->addContains(item8);
 	
 
 	entities.push_back(room1); entities.push_back(room2); entities.push_back(room3); entities.push_back(room4); 
@@ -86,7 +89,8 @@ void World::createWorld() {
 	entities.push_back(exit1); entities.push_back(exit2); entities.push_back(exit3); entities.push_back(exit4); entities.push_back(exit5); entities.push_back(exit6); entities.push_back(exit7);
 	entities.push_back(exit8); entities.push_back(exit9); entities.push_back(exit10); entities.push_back(exit11); entities.push_back(exit12); entities.push_back(exit13);
 	
-	entities.push_back(item1); 	entities.push_back(item2); 	entities.push_back(item3); 	entities.push_back(item4); entities.push_back(item5); entities.push_back(item6); entities.push_back(item7);
+	entities.push_back(item1); 	entities.push_back(item2); 	entities.push_back(item3); 	entities.push_back(item4); entities.push_back(item5); entities.push_back(item6); 
+	entities.push_back(item7);  entities.push_back(item8);
 
 	entities.push_back(npc1);
 
@@ -146,6 +150,8 @@ void World::processCommand(const std::vector<std::string>& command) {
 		player->viewShop();
 	}else if (command[0] == "radar") {
 		player->viewRadar();
+	}else if (command[0] == "buy") {
+		player->buyItemShop(command);
 	}
 }
 

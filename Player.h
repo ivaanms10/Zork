@@ -42,6 +42,7 @@ class Player : public Creature{
 		void talkNPC();
 		void viewShop();
 		void viewRadar();
+		void buyItemShop(const std::vector<std::string>& command);
 
 		void decreaseAmountItem();
 		Item* existItemInventory(Item* item);

@@ -6,6 +6,7 @@
 
 class Room;
 class World;
+class Item;
 
 //Enum with the 4 possible directions.
 enum class NPCType {
@@ -25,6 +26,7 @@ class NPC : public Creature{
 		~NPC();
 
 		void showShop() const;
+		Item* buyItem(const std::string& itemName, int goldPlayer);
 		
 		NPCType getType() const { return type; } //Method to get the type of NPC.
 };
