@@ -26,6 +26,8 @@ class Creature : public Entity{
 		Creature(World* world, const std::string& name, const std::string& description, EntityType type, Room* location, int health, int shield, int gold);
 		~Creature();
 
+		void receiveDamage(int damage);
+
 		int getHealth() const { return health; } //Method to get the creature health.
 		int getShield() const { return shield; } //Method to get the creature shield.
 		Room* getLocation() const { return location; } //Method to get the creature room.

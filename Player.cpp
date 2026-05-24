@@ -635,3 +635,36 @@ void Player::sellItemShop(const std::vector<std::string>& command) {
         }
     }
 }
+
+
+/*
+    @brief Method to make damage to NPC enemies.
+*/
+void Player::shootEnemies() {
+    if (selectedNPC != nullptr) {
+        if (selectedNPC->getType() == NPCType::ENEMIES) {
+            if (selectedItem->getItemType() == ItemType::RIFLE || selectedItem->getItemType() == ItemType::SHOTGUN) {
+                if (numAmmo > 0) {
+                    --numAmmo;
+                    selectedNPC->receiveDamage(selectedItem->getValue());
+
+                    if (selectedNPC->getHealth() == 0) {
+                        std::cout << "Congratulations, you have defeated the enemy " << selectedNPC->getName() << std::endl;
+                        for (const auto& it : selectedNPC->getContains()) {
+                            getLocation()->addContains(it);
+                        }
+                        getLocation()->removeEntity(selectedNPC);
+                        getWorld()->removeEntity(selectedNPC);
+                        selectedNPC = nullptr;
+                    }
+                    else {
+                        std::cout << " ->" << selectedNPC->getName() << "   Health: " << selectedNPC->getHealth() << "  Shield: " << selectedNPC->getShield() << "  Ammo:" << numAmmo << std::endl;
+                    }
+                }
+                else {
+                    std::cout << "You don't have more bullets. RUNN!!!" << std::endl;
+                }
+            }
+        }
+    }
+}

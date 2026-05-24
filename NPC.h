@@ -4,14 +4,18 @@
 #include "Creature.h"
 #include <string>
 
+static const int MAX_DAMAGE_ENEMIE = 50;
+static const int MIN_DAMAGE_ENEMIE = 50;
+
+
 class Room;
 class World;
 class Item;
+class Player;
 
 //Enum with the 4 possible directions.
 enum class NPCType {
 	ENEMIES,
-	FRIENDLY,
 	SELLER
 };
 
@@ -28,6 +32,7 @@ class NPC : public Creature{
 		void showShop() const;
 		Item* buyItem(const std::string& itemName, int goldPlayer);
 		bool sellItem(Item* item);
+		void attackPlayer(Player* player);
 		
 		NPCType getType() const { return type; } //Method to get the type of NPC.
 };

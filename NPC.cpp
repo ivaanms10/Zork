@@ -2,6 +2,7 @@
 #include "Room.h"  
 #include "World.h"
 #include "Item.h"
+#include "Player.h"
 #include <iostream>
 
 /*
@@ -66,7 +67,10 @@ void NPC::showShop() const {
 
 
 /*
-	@brief
+	@brief Method to buy a new item from the NPC seller.
+	@param itemName Name of the item the player wants to buy.
+	@param goldPlayer Amount of gold the player has.
+	@return Pointer to the new item or nullptr if you cant buy the item.
 */
 Item* NPC::buyItem(const std::string& itemName, int goldPlayer) {
 	for (const auto& it : getContains()) {
@@ -90,7 +94,9 @@ Item* NPC::buyItem(const std::string& itemName, int goldPlayer) {
 
 
 /*
-	@brief
+	@brief Method to sell an item to the NPC seller.
+	@param item Pointer to the item you are going to sell to the NPC seller.
+	@return True if you sell the item succesfully, False if you don't sell it.
 */
 bool NPC::sellItem(Item* item) {
 	if (item != nullptr) {
@@ -102,4 +108,16 @@ bool NPC::sellItem(Item* item) {
 		}
 	}
 	return false;
+}
+
+
+/*
+	@brief
+*/
+void NPC::attackPlayer(Player* player) {
+	if (type == NPCType::ENEMIES) {
+		int damage = (rand() % MAX_DAMAGE_ENEMIE) + MIN_DAMAGE_ENEMIE;
+		player->receiveDamage(damage);
+		std::cout << " ->" << player->getName() << "   Health: " << player->getHealth() << "  Shield: " << player->getShield() << std::endl;
+	}
 }

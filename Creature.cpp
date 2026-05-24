@@ -32,3 +32,21 @@ Creature::Creature(World* world, const std::string& name, const std::string& des
 Creature::~Creature() {
 
 }
+
+
+/*
+	@brief Method to receive damage from a creature.
+*/
+void Creature::receiveDamage(int damage) {
+	if (damage < shield) {
+		shield -= damage;
+	} else {
+		int difDamage = damage - shield;
+		shield = 0;
+		if (difDamage > health) {
+			health = 0;
+		} else {
+			health -= difDamage;
+		}
+	}
+}
