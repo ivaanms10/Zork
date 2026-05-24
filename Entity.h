@@ -1,9 +1,7 @@
 #ifndef ENTITY_H
 #define ENTITY_H
 
-#include <iostream>
 #include <list>
-#include <vector>
 #include <string>
 
 //Enum with the types of entities.
@@ -35,6 +33,10 @@ class Entity {
 		EntityType getType() const { return type; } //Method to get the type of entity.
 		std::string getName() const { return name; } //Method to get the name entity.
 		std::string getDescription() const { return description; } //Method to get the description entity.
+		std::list<Entity*> getContains() const { return contains; } //Method to get the contains.
+
+		void addContains(Entity* entity) { this->contains.push_back(entity); } //Method to add a new entity to the contains list.
+		void removeContains(Entity* entity) { this->contains.remove(entity); } //Method to remove an entity from the contains list.
 };
 
 #endif // !ENTITY_H
