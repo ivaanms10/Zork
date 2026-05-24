@@ -8,15 +8,16 @@
 class Item;
 class Room;
 class World;
+class NPC;
 
 static const int MAX_ITEM_INVENTORY = 5;
 
 class Player : public Creature{
 	private:
 		Item* selectedItem = nullptr;
+		NPC* selectedNPC = nullptr;
 		int numKills = 0;
 		int numDeath = 0;
-		int numGold = 0; //Gold to buy new Items.
 		int numAmmo = 0;
 
 	public:
@@ -38,11 +39,13 @@ class Player : public Creature{
 		void closeExit(const std::vector<std::string>& command);
 		void movePlayer(const std::vector<std::string>& command);
 		void autoTake();
+		void talkNPC();
+		void viewShop();
+		void viewRadar();
 
 		void decreaseAmountItem();
 		Item* existItemInventory(Item* item);
 		
-		void setGold(int numGold) { this->numGold = numGold; } //Method to set a new amount of gold.
 		void setAmmo(int numAmmo) { this->numAmmo = numAmmo; } //Method to set a new amount of gold.
 };
 

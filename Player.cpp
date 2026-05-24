@@ -4,12 +4,13 @@
 #include "World.h"
 #include "Utils.h"
 #include "Exit.h"
+#include "NPC.h"
 #include <iostream>
 
 /*
 	@brief Default constructor of the Player class.
 */
-Player::Player() : Creature(nullptr, "", "", EntityType::PLAYER, nullptr, MAX_HEALTH, 0), selectedItem(nullptr), numKills(0), numDeath(0), numGold(0) {
+Player::Player() : Creature(nullptr, "", "", EntityType::PLAYER, nullptr, MAX_HEALTH, 0, 0), selectedItem(nullptr), selectedNPC(nullptr), numKills(0), numDeath(0) {
     
 }
 
@@ -20,7 +21,7 @@ Player::Player() : Creature(nullptr, "", "", EntityType::PLAYER, nullptr, MAX_HE
 	@param location Room where the player is located.
     @param world Pointer to the world where the player is located.
 */
-Player::Player(const std::string& name, const std::string& description, Room* location, World* world) : Creature(world, name, description, EntityType::PLAYER, location, MAX_HEALTH, 0), selectedItem(nullptr), numKills(0), numDeath(0), numGold(0){
+Player::Player(const std::string& name, const std::string& description, Room* location, World* world) : Creature(world, name, description, EntityType::PLAYER, location, MAX_HEALTH, 0, 0), selectedItem(nullptr), selectedNPC(nullptr), numKills(0), numDeath(0){
 
 }
 
@@ -47,7 +48,7 @@ void Player::statsPlayer() const{
 
     std::cout << "--------------------------------------------------" << std::endl;
     std::cout << " Kills:   " << numKills << "                 Death: " << numDeath << std::endl;
-    std::cout << " Gold:  " << numGold << std::endl;
+    std::cout << " Gold:  " << getGold() << std::endl;
     std::cout << "==================================================" << std::endl;
 }
 
@@ -214,7 +215,7 @@ void Player::dropItemAmount(int amount, Item* item) {
     } else if (amount > 0 && amount < item->getAmount()) {
         std::cout << item->getName() << " drop succesfully. " << amount << " uds." << std::endl;
         item->setAmount(item->getAmount() - amount);
-        Item* newItem = new Item(item->getName(), item->getDescription(), item->getType(), item->getItemType(), amount, item->getValue());
+        Item* newItem = new Item(item->getName(), item->getDescription(), item->getType(), item->getItemType(), amount, item->getValue(), item->getPrice());
         getLocation()->addContains(newItem);
         getWorld()->addEntity(newItem);
     }
@@ -494,12 +495,12 @@ void Player::autoTake() {
     for (const auto& it : addItemsInventory) {
         Item* item = dynamic_cast<Item*>(it);
         if (item->getItemType() == ItemType::GOLD) {
-            int newGold = numGold + item->getAmount();
+            int newGold = getGold() + item->getAmount();
 
             if (newGold > MAX_GOLD) {
                 int difGold = newGold - MAX_GOLD;
 
-                std::cout << " + " << MAX_GOLD - numGold << " gold." << std::endl;
+                std::cout << " + " << MAX_GOLD - getGold() << " gold." << std::endl;
                 setGold(MAX_GOLD);
                 item->setAmount(difGold);
             } else {
@@ -527,4 +528,61 @@ void Player::autoTake() {
 
         }
     }
+}
+
+
+/*
+    @brief Method to talk with the NPC in the room
+*/
+void Player::talkNPC() {
+    for (const auto& it : getLocation()->getContains()) {
+        NPC* npc = dynamic_cast<NPC*>(it);
+
+        if (npc != nullptr) {
+            if (npc->getType() == NPCType::SELLER) {
+                std::cout << "Welcome to my shop, I'm " << npc->getName() << ". How can I help you?" << std::endl;
+                selectedNPC = npc;
+            }
+        }
+    }
+}
+
+
+/*
+    @brief Method to view the items of the vendor NPC.
+*/
+void Player::viewShop() {
+    if (selectedNPC != nullptr) {
+        if (selectedNPC->getType() == NPCType::SELLER) {
+            selectedNPC->showShop();
+        }
+    }
+}
+
+
+/*
+    @brief Method to view all NPCs in the room.
+*/
+void Player::viewRadar() {
+    std::cout << "==================================================" << std::endl;
+    std::cout << "                       RADAR                      " << std::endl;
+    std::cout << "==================================================" << std::endl;
+
+    std::list<NPC*> npcRoom;
+    for (const auto& it : getLocation()->getContains()) {
+        NPC* npc = dynamic_cast<NPC*>(it);
+
+        if (npc != nullptr) {
+            npcRoom.push_back(npc);
+        }
+    }
+
+    if (npcRoom.empty()) {
+        std::cout << "             The room is empty of NPCs.          " << std::endl << std::endl;
+    } else {
+        for (const auto& it : npcRoom) {
+            std::cout << "  ->  " << it->getName() << " : " << it->getDescription() << std::endl;
+        }
+    }
+    std::cout << "==================================================" << std::endl;
 }

@@ -3,6 +3,7 @@
 #include "Room.h"
 #include "Exit.h"
 #include "Item.h"
+#include "NPC.h"
 #include <random>
 #include <algorithm>
 #include <iostream>
@@ -39,13 +40,13 @@ void World::createWorld() {
 	Room* room7 = new Room("Locked Treasure", "A reinforced stone vault holding a massive, heavily padlocked chest.");
 
 
-	Item* item1 = new Item("Big Chest", "Chest that contains a weapon and a curative item", EntityType::ITEM, ItemType::CHEST, 1, 1);
-	Item* item2 = new Item("M4", "Rifle to kill enemies", EntityType::ITEM, ItemType::RIFLE, 1, 25);
-	Item* item3 = new Item("Big Shield", "Shield that health 50", EntityType::ITEM, ItemType::BIG_SHIELD, 1, 50);
-	Item* item4 = new Item("Small Shield", "Shield that health 25", EntityType::ITEM, ItemType::SMALL_SHIELD, 3, 25);
-	Item* item5 = new Item("Small Shield", "Shield that health 25", EntityType::ITEM, ItemType::SMALL_SHIELD, 3, 25);
-	Item* item6 = new Item("Small Shield", "Shield that health 25", EntityType::ITEM, ItemType::SMALL_SHIELD, 3, 25);
-	Item* item7 = new Item("Magic Key", "Key to open blocked exits", EntityType::ITEM, ItemType::KEY, 1, 1);
+	Item* item1 = new Item("Big Chest", "Chest that contains a weapon and a curative item", EntityType::ITEM, ItemType::CHEST, 1, 1, 0);
+	Item* item2 = new Item("M4", "Rifle to kill enemies", EntityType::ITEM, ItemType::RIFLE, 1, 25, PRICE_RIFLE);
+	Item* item3 = new Item("Big Shield", "Shield that health 50", EntityType::ITEM, ItemType::BIG_SHIELD, 1, 50, PRICE_BIG_SHIELD);
+	Item* item4 = new Item("Small Shield", "Shield that health 25", EntityType::ITEM, ItemType::SMALL_SHIELD, 3, 25, PRICE_SMALL_SHIELD);
+	Item* item5 = new Item("Small Shield", "Shield that health 25", EntityType::ITEM, ItemType::SMALL_SHIELD, 3, 25, PRICE_SMALL_SHIELD);
+	Item* item6 = new Item("Small Shield", "Shield that health 25", EntityType::ITEM, ItemType::SMALL_SHIELD, 3, 25, PRICE_SMALL_SHIELD);
+	Item* item7 = new Item("Magic Key", "Key to open blocked exits", EntityType::ITEM, ItemType::KEY, 1, 1, 0);
 
 
 	Exit* exit1 = new Exit(DirectionType::NORTH, room1, room3,"Exit 1", "Entryway-Sunken Garden", false,nullptr); 
@@ -63,6 +64,10 @@ void World::createWorld() {
 	Exit* exit13 = new Exit(DirectionType::WEST,room6, room5,"Exit 13","Smuggler's Cove-Rocky Cavern", false, nullptr);
 	
 
+	NPC* npc1 = new NPC("Seller", "Item seller", NPCType::SELLER, room1, this);
+
+	player = new Player("Ivan", "First player playing zork game.", room1, this);
+
 	room1->addContains(exit1); room1->addContains(exit2); room1->addContains(exit3); room1->addContains(exit4);
 	room2->addContains(exit8);
 	room3->addContains(exit7);
@@ -72,9 +77,8 @@ void World::createWorld() {
 	room7->addContains(exit11);
 
 	item1->addContains(item2); item1->addContains(item3); item1->addContains(item7);
-	room4->addContains(item4); room3->addContains(item1); room1->addContains(item5); room3->addContains(item6);
+	room4->addContains(item4); room3->addContains(item1); room1->addContains(item5); room3->addContains(item6); room1->addContains(npc1);
 	
-	player = new Player("Ivan", "First player playing zork game.", room1, this);
 
 	entities.push_back(room1); entities.push_back(room2); entities.push_back(room3); entities.push_back(room4); 
 	entities.push_back(room5); entities.push_back(room6); entities.push_back(room7);
@@ -83,6 +87,8 @@ void World::createWorld() {
 	entities.push_back(exit8); entities.push_back(exit9); entities.push_back(exit10); entities.push_back(exit11); entities.push_back(exit12); entities.push_back(exit13);
 	
 	entities.push_back(item1); 	entities.push_back(item2); 	entities.push_back(item3); 	entities.push_back(item4); entities.push_back(item5); entities.push_back(item6); entities.push_back(item7);
+
+	entities.push_back(npc1);
 
 	entities.push_back(player);
 }
@@ -134,6 +140,12 @@ void World::processCommand(const std::vector<std::string>& command) {
 		player->getLocation()->showExits();
 	}else if (command[0] == "deselect") {
 		player->deselectItem();
+	}else if (command[0] == "talk") {
+		player->talkNPC();
+	}else if (command[0] == "view" && command[1] == "shop") {
+		player->viewShop();
+	}else if (command[0] == "radar") {
+		player->viewRadar();
 	}
 }
 
