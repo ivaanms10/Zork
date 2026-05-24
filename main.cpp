@@ -8,7 +8,7 @@ int main() {
 	std::vector<std::string> partsCommand;
 
 	while (true) {
-		std::cout << "\n>  ";
+		std::cout << "\n\n>  ";
 		partsCommand = Utils::getPartCommand();
 		if (!partsCommand.empty()) {
 			if (partsCommand[0] == "Exit") {

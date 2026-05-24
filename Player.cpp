@@ -3,6 +3,7 @@
 #include "Room.h"  
 #include "World.h"
 #include "Utils.h"
+#include "Exit.h"
 #include <iostream>
 
 /*
@@ -96,6 +97,7 @@ void Player::takeItem(const std::vector<std::string>& command) {
                         if (getContains().size() < MAX_ITEM_INVENTORY) {
                             addContains(itemRoom);
                             getLocation()->removeEntity(itemRoom);
+                            std::cout << "You have put the " << itemRoom->getName() << " in your inventory." << std::endl;
                         } else {
                             std::cout << "You can't take more items because the inventory is full." << std::endl;
                         }
@@ -111,7 +113,9 @@ void Player::takeItem(const std::vector<std::string>& command) {
                             itemInventory->setAmount(itemInventory->getMaxAmount());
                             itemRoom->setAmount(difAmount);
                         }
+                        std::cout << "You have put the " << itemRoom->getName() << " in your inventory." << std::endl;
                     } else {
+                        std::cout << "You have put the " << itemRoom->getName() << " in your inventory." << std::endl;
                         itemInventory->setAmount(newAmount);
                         getLocation()->removeEntity(itemRoom);
                         getWorld()->removeEntity(itemRoom);
@@ -122,6 +126,7 @@ void Player::takeItem(const std::vector<std::string>& command) {
                         if (itemRoom->getItemType() != ItemType::CHEST) {
                             addContains(it);
                             getLocation()->removeEntity(it);
+                            std::cout << "You have put the " << itemRoom->getName() << " in your inventory." << std::endl;
                         } else {
                             std::cout << "You can't take the chest. " << std::endl;
                         }
@@ -376,4 +381,83 @@ Item* Player::existItemInventory(Item* item) {
         }
     }
     return nullptr;
+}
+
+
+/*
+    @brief Method to open a close exit.
+    @param command Vector that contains the command entered by the player.
+*/
+void Player::openExit(const std::vector<std::string>& command) {
+    if (command.size() == 2) {
+        if (selectedItem != nullptr) {
+            for (const auto& it : getLocation()->getContains()) {
+                if (it->getType() == EntityType::EXIT) {
+                    Exit* exit = dynamic_cast<Exit*>(it); //Pointer to the exit.
+
+                    if (exit->getDirectionType() == command[1]) {
+                        if (exit->getBlocked()) {
+                            exit->openExit(selectedItem);
+                        }
+                        std::cout << "The exit is correctly open, you can go into the room ..." << std::endl;
+                        break;
+                    }
+                }
+            }
+        } else {
+            std::cout << "You need to have the correct object selected to open the door." << std::endl;
+        }
+    }
+}
+
+
+/*
+    @brief Method to close a open exit.
+    @param command Vector that contains the command entered by the player.
+*/
+void Player::closeExit(const std::vector<std::string>& command) {
+    if (command.size() == 2) {
+        if (selectedItem != nullptr) {
+            for (const auto& it : getLocation()->getContains()) {
+                if (it->getType() == EntityType::EXIT) {
+                    Exit* exit = dynamic_cast<Exit*>(it); //Pointer to the exit.
+
+                    if (exit->getDirectionType() == command[1]) {
+                        if (!exit->getBlocked()) {
+                            exit->closeExit(selectedItem);
+                        } 
+                        std::cout << "The exit is correctly close ..." << std::endl;
+                        break;
+                    }
+                }
+            }
+        } else {
+            std::cout << "You need to have the correct object selected to open the door." << std::endl;
+        }
+    }
+}
+
+
+/*
+    @brief Method to move the player around the map.
+    @param command Vector that contains the command entered by the player.
+*/
+void Player::movePlayer(const std::vector<std::string>& command) {
+    if (command.size() == 2) {
+        for (const auto& it : getLocation()->getContains()) {
+            if (it->getType() == EntityType::EXIT) {
+                Exit* exit = dynamic_cast<Exit*>(it); //Pointer to the exit.
+
+                if (exit->getDirectionType() == command[1]) {
+                    if (exit->getBlocked()) {
+                        std::cout << "The exit is blocked. You need " << exit->getKey()->getName() << " to open." << std::endl;
+                    } else {
+                        setLocation(exit->getDestination());
+                        std::cout << "You've moved to the room " << exit->getDestination()->getName() << std::endl;
+                    }
+                    break;
+                }
+            }
+        }
+    }
 }

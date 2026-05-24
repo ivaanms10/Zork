@@ -1,5 +1,6 @@
 #include "Room.h"
 #include "Item.h"
+#include "Exit.h"
 #include <iostream>
 
 /*
@@ -49,7 +50,6 @@ void Room::showRoom() const {
 	if (getContains().empty()) {
 		std::cout << "               The room is empty.              " << std::endl << std::endl;
 	}else {
-		int i = 1;
 		for (const auto& it : getContains()) {
 			Item* item = dynamic_cast<Item*>(it);
 
@@ -59,4 +59,29 @@ void Room::showRoom() const {
 		}
 	}
     std::cout << "==================================================" << std::endl;
+}
+
+
+/*
+	@brief Method to show the room exits.
+*/
+void Room::showExits() const {
+	std::cout << "==================================================" << std::endl;
+	std::cout << "                     ROOM                         " << std::endl;
+	std::cout << "==================================================" << std::endl;
+	std::cout << " Name: " << Entity::getName() << "                " << std::endl;
+	std::cout << " Description: " << Entity::getDescription() << "  " << std::endl;
+	std::cout << "--------------------------------------------------" << std::endl << std::endl;
+	if (getContains().empty()) {
+		std::cout << "               The room has no exits.              " << std::endl << std::endl;
+	} else {
+		for (const auto& it : getContains()) {
+			Exit* exit = dynamic_cast<Exit*>(it);
+
+			if (exit != nullptr) {
+				std::cout << "  ->  " << exit->getDirectionType() << " : Source -> " << exit->getSource()->getName() << "  Destination -> " << exit->getDestination()->getName() << std::endl;
+			}
+		}
+	}
+	std::cout << "==================================================" << std::endl;
 }

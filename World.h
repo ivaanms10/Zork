@@ -20,8 +20,6 @@ class World{
 		void processCommand(const std::vector<std::string> &command);
 		void addEntity(Entity* entity) { entities.push_back(entity); } //Method to add a new entity.
 		void removeEntity(Entity* entity);
-		
-		void movePlayer(const std::vector<std::string>& command);
 
 };
 

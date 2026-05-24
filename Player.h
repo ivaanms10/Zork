@@ -24,14 +24,18 @@ class Player : public Creature{
 		~Player();
 
 		void statsPlayer() const;
+		void showInventory() const;
 		void takeItem(const std::vector<std::string>& command);
 		void dropItem(const std::vector<std::string>& command);
 		void dropItemSelected(const std::vector<std::string>& command);
 		void dropItemAmount(int amount, Item* item);
-		void showInventory() const;
 		void openChest(const std::vector<std::string>& command);
 		void selectItem(const std::vector<std::string>& command);
 		void useItemSelected();
+		void openExit(const std::vector<std::string>& command);
+		void closeExit(const std::vector<std::string>& command);
+		void movePlayer(const std::vector<std::string>& command);
+
 		void decreaseAmountItem();
 		Item* existItemInventory(Item* item);
 };

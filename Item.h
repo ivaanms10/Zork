@@ -11,7 +11,7 @@ static const int MAX_KIT = 3;
 static const int MAX_BANDAGES = 15;
 static const int MAX_RIFLE = 1;
 static const int MAX_SHOTGUN = 1;
-static const int MAX_UTILITY = 1;
+static const int MAX_KEY = 1;
 static const int MAX_AMMUNATION = 100;
 static const int MAX_GOLD = 500;
 
@@ -25,7 +25,7 @@ enum class ItemType {
 	BANDAGES, 
 	RIFLE, 
 	SHOTGUN, 
-	UTILITY, 
+	KEY, 
 	AMMUNITION, 
 	GOLD 
 };

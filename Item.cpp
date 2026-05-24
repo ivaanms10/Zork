@@ -50,8 +50,8 @@ int Item::getMaxAmount() const {
             return MAX_RIFLE;
         case ItemType::SHOTGUN:
             return MAX_SHOTGUN;
-        case ItemType::UTILITY:
-            return MAX_UTILITY;
+        case ItemType::KEY:
+            return MAX_KEY;
         case ItemType::AMMUNITION:
             return MAX_AMMUNATION;
         case ItemType::GOLD:
