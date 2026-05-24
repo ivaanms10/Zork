@@ -87,8 +87,9 @@ void Player::takeItem(const std::vector<std::string>& command) {
     for (const auto& it : getLocation()->getContains()) {
         if (it->getType() == EntityType::ITEM) {
             Item* itemRoom = dynamic_cast<Item*>(it);
-
-            if (itemRoom->getName() == Utils::getFullNameItem(command)) {
+            
+            if (itemRoom->getName() == Utils::getFullNameItem(command, command.size()-1)) {
+                
                 Item* itemInventory = existItemInventory(itemRoom);
                 if (itemInventory != nullptr) {
                     int newAmount = itemInventory->getAmount() + itemRoom->getAmount();
@@ -152,7 +153,7 @@ void Player::dropItem(const std::vector<std::string>& command) {
             
             for (const auto& it : getContains()) {
                 if (it->getType() == EntityType::ITEM) {
-                    if (it->getName() == Utils::getFullNameItem(command)) {
+                    if (it->getName() == Utils::getFullNameItem(command, command.size() - 2)) {
                         Item* item = dynamic_cast<Item*>(it);
                         dropItemAmount(amount, item);
                     }
@@ -161,7 +162,7 @@ void Player::dropItem(const std::vector<std::string>& command) {
         } catch (const std::invalid_argument& e) {
             for (const auto& it : getContains()) {
                 if (it->getType() == EntityType::ITEM) {
-                    if (it->getName() == Utils::getFullNameItem(command)) {
+                    if (it->getName() == Utils::getFullNameItem(command, command.size() - 1)) {
                         std::cout << it->getName() << " drop succesfully." << std::endl;
                         getLocation()->addContains(it);
                         removeContains(it);
@@ -269,7 +270,7 @@ void Player::selectItem(const std::vector<std::string>& command) {
                     Item* item = dynamic_cast<Item*>(it);
 
                     if (item != nullptr ){
-                        if (item->getName() == Utils::getFullNameItem(command)) {
+                        if (item->getName() == Utils::getFullNameItem(command, command.size() - 1)) {
                             selectedItem = item;
                             std::cout<<"You have selected: " << item->getName() << std::endl; 
                             break;
@@ -278,6 +279,18 @@ void Player::selectItem(const std::vector<std::string>& command) {
                 }
             }
         }
+    }
+}
+
+
+/*
+    @brief Method to deselect the selected item.
+    @param command Vector that contains the command entered by the player.
+*/
+void Player::deselectItem() {
+    if (selectedItem != nullptr) {
+        std::cout << selectedItem->getName() << " correctly deselected..." << std::endl;
+        selectedItem = nullptr;
     }
 }
 
@@ -458,6 +471,60 @@ void Player::movePlayer(const std::vector<std::string>& command) {
                     break;
                 }
             }
+        }
+    }
+}
+
+
+/*
+    @brief
+*/
+void Player::autoTake() {
+    std::list<Entity*> addItemsInventory;
+
+    for (const auto& it : getLocation()->getContains()) {
+        Item* item = dynamic_cast<Item*>(it);
+        if (item->getItemType() == ItemType::GOLD) {
+            addItemsInventory.push_back(item);
+        } else if (item->getItemType() == ItemType::AMMUNITION) {
+            addItemsInventory.push_back(item);
+        }
+    }
+
+    for (const auto& it : addItemsInventory) {
+        Item* item = dynamic_cast<Item*>(it);
+        if (item->getItemType() == ItemType::GOLD) {
+            int newGold = numGold + item->getAmount();
+
+            if (newGold > MAX_GOLD) {
+                int difGold = newGold - MAX_GOLD;
+
+                std::cout << " + " << MAX_GOLD - numGold << " gold." << std::endl;
+                setGold(MAX_GOLD);
+                item->setAmount(difGold);
+            } else {
+                setGold(newGold);
+                std::cout << " + " << item->getAmount() << " gold." << std::endl;
+                getLocation()->removeEntity(it);
+                getWorld()->removeEntity(it);
+            }
+  
+        } else if (item->getItemType() == ItemType::AMMUNITION) {
+            int newAmmo = numAmmo + item->getAmount();
+
+            if (newAmmo > MAX_AMMUNATION) {
+                int difAmmo = newAmmo - MAX_AMMUNATION;
+
+                std::cout << " + " << MAX_AMMUNATION - numAmmo << " ammo." << std::endl;
+                setAmmo(MAX_AMMUNATION);
+                item->setAmount(difAmmo);
+            } else {
+                setAmmo(newAmmo);
+                std::cout << " + " << item->getAmount() << " ammo." << std::endl;
+                getLocation()->removeEntity(it);
+                getWorld()->removeEntity(it);
+            }
+
         }
     }
 }

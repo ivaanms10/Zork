@@ -132,6 +132,8 @@ void World::processCommand(const std::vector<std::string>& command) {
 		player->closeExit(command);
 	} else if (command[0] == "show" && command[1] == "exits") {
 		player->getLocation()->showExits();
+	}else if (command[0] == "deselect") {
+		player->deselectItem();
 	}
 }
 

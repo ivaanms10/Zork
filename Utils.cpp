@@ -22,24 +22,16 @@ std::vector<std::string> Utils::getPartCommand() {
 
 /*
 	@brief Method to get the full name of the items.
+	@param endName Number with the position of the vector where the name ends
 	@return String with the full name.
 */
-std::string Utils::getFullNameItem(const std::vector<std::string>& command) {
+std::string Utils::getFullNameItem(const std::vector<std::string>& command, int endName) {
 	std::string fullName = "";
-	try {
-		int num = std::stoi(command.back());
-		for (int i = 1; i < command.size()-1; ++i) {
-			fullName += command[i];
-			if (i < command.size() - 2) {
-				fullName += " ";
-			}
-		}
-	}catch (const std::invalid_argument& e) {
-		for (int i = 1; i < command.size(); ++i) {
-			fullName += command[i];
-			if (i < command.size() - 1) {
-				fullName += " ";
-			}
+
+	for (int i = 1; i < endName + 1; ++i) {
+		fullName += command[i];
+		if (i < endName) {
+			fullName += " ";
 		}
 	}
 	
