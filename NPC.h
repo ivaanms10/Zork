@@ -11,7 +11,6 @@ static const int MIN_DAMAGE_ENEMIE = 50;
 class Room;
 class World;
 class Item;
-class Player;
 
 //Enum with the 4 possible directions.
 enum class NPCType {
@@ -32,7 +31,7 @@ class NPC : public Creature{
 		void showShop() const;
 		Item* buyItem(const std::string& itemName, int goldPlayer);
 		bool sellItem(Item* item);
-		void attackPlayer(Player* player);
+		void attackPlayer();
 		
 		NPCType getType() const { return type; } //Method to get the type of NPC.
 };

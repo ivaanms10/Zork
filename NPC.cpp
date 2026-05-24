@@ -112,12 +112,16 @@ bool NPC::sellItem(Item* item) {
 
 
 /*
-	@brief
+	@brief Method to cause damage to the main player.
 */
-void NPC::attackPlayer(Player* player) {
+void NPC::attackPlayer() {
 	if (type == NPCType::ENEMIES) {
 		int damage = (rand() % MAX_DAMAGE_ENEMIE) + MIN_DAMAGE_ENEMIE;
-		player->receiveDamage(damage);
-		std::cout << " ->" << player->getName() << "   Health: " << player->getHealth() << "  Shield: " << player->getShield() << std::endl;
+		Player* player = getWorld()->getPlayer();
+
+		if (player != nullptr) {
+			player->receiveDamage(damage);
+			std::cout << " ->" << player->getName() << "   Health: " << player->getHealth() << "  Shield: " << player->getShield() << std::endl;
+		}
 	}
 }

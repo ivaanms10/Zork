@@ -466,9 +466,10 @@ void Player::movePlayer(const std::vector<std::string>& command) {
                     if (exit->getBlocked()) {
                         std::cout << "The exit is blocked. You need " << exit->getKey()->getName() << " to open." << std::endl;
                     } else {
+                        std::cout << "You've moved to the room " << exit->getDestination()->getName() << std::endl;
                         setLocation(exit->getDestination());
                         selectedNPC = nullptr;
-                        std::cout << "You've moved to the room " << exit->getDestination()->getName() << std::endl;
+                        findEnemie();
                     }
                     break;
                 }
@@ -664,6 +665,25 @@ void Player::shootEnemies() {
                 else {
                     std::cout << "You don't have more bullets. RUNN!!!" << std::endl;
                 }
+            }
+        }
+    }
+}
+
+
+/*
+    @brief Method to see if there is an enemy in the room.
+*/
+void Player::findEnemie() {
+    for (const auto& it : getLocation()->getContains()) {
+        NPC* enemy = dynamic_cast<NPC*>(it);
+
+        if (enemy != nullptr) {
+            if (enemy->getType() == NPCType::ENEMIES) {
+                std::cout << "!!!!! A wild " << enemy->getName() << " appears in the room!!!!!" << std::endl;
+                std::cout << " ->" << selectedNPC->getName() << "   Health: " << selectedNPC->getHealth() << "  Shield: " << selectedNPC->getShield() << std::endl;
+                selectedNPC = enemy;
+                break;
             }
         }
     }

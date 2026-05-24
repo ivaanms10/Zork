@@ -45,6 +45,7 @@ class Player : public Creature{
 		void buyItemShop(const std::vector<std::string>& command);
 		void sellItemShop(const std::vector<std::string>& command);
 		void shootEnemies();
+		void findEnemie();
 
 		void decreaseAmountItem();
 		Item* existItemInventory(Item* item);
