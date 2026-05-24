@@ -65,6 +65,9 @@ void NPC::showShop() const {
 }
 
 
+/*
+	@brief
+*/
 Item* NPC::buyItem(const std::string& itemName, int goldPlayer) {
 	for (const auto& it : getContains()) {
 		Item* item = dynamic_cast<Item*>(it);
@@ -83,4 +86,20 @@ Item* NPC::buyItem(const std::string& itemName, int goldPlayer) {
 		}
 	}
 	return nullptr;
+}
+
+
+/*
+	@brief
+*/
+bool NPC::sellItem(Item* item) {
+	if (item != nullptr) {
+		if (item->getPrice() < getGold()) {
+			addContains(item);
+			return true;
+		} else {
+			std::cout << "You can't sell the" << item->getName() << ". " << getName() << " doesn't have enough gold to buy it." << std::endl;
+		}
+	}
+	return false;
 }

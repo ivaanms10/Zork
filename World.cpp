@@ -152,6 +152,8 @@ void World::processCommand(const std::vector<std::string>& command) {
 		player->viewRadar();
 	}else if (command[0] == "buy") {
 		player->buyItemShop(command);
+	}else if (command[0] == "sell") {
+		player->sellItemShop(command);
 	}
 }
 

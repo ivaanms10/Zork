@@ -11,7 +11,7 @@ static const int MAX_HEALTH = 100;
 static const int MAX_BANDAGES_HEALTH = 75;
 static const int MAX_SMALL_SHIELD = 50;
 static const int MAX_SHIELD = 100;
-static const int MAX_GOLD_CREATURE = 500;
+static const int MAX_GOLD_CREATURE = 5000;
 
 class Creature : public Entity{
 	private:

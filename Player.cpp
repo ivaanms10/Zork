@@ -610,3 +610,28 @@ void Player::buyItemShop(const std::vector<std::string>& command) {
         }
     }
 }
+
+
+/*
+    @brief Method to sell an item to an NPC seller.
+    @param command Vector that contains the command entered by the player.
+*/
+void Player::sellItemShop(const std::vector<std::string>& command) {
+    if (selectedNPC != nullptr) {
+        if (selectedNPC->getType() == NPCType::SELLER) {
+            for (const auto& it : getContains()) {
+                Item* item = dynamic_cast<Item*>(it);
+
+                if (item != nullptr) {
+                    if (item->getName() == Utils::getFullNameItem(command, command.size() - 1)) {
+                        if (selectedNPC->sellItem(item)) {
+                            std::cout << item->getName() << " sold successfully. Thank you." << std::endl;
+                            setGold(getGold() + item->getPrice());
+                            removeContains(item);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
