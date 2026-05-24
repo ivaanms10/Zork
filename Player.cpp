@@ -159,7 +159,7 @@ void Player::dropItem(const std::vector<std::string>& command) {
                     }
                 }
             }
-        } catch (const std::invalid_argument& e) {
+        } catch (const std::invalid_argument&) {
             for (const auto& it : getContains()) {
                 if (it->getType() == EntityType::ITEM) {
                     if (it->getName() == Utils::getFullNameItem(command, command.size() - 1)) {
@@ -187,7 +187,7 @@ void Player::dropItemSelected(const std::vector<std::string>& command) {
                 int amount = std::stoi(command[1]);
                 dropItemAmount(amount, selectedItem);
                 
-            } catch (const std::invalid_argument& e) {
+            } catch (const std::invalid_argument&) {
                 dropItem(command);
             }
         } else {
@@ -299,7 +299,7 @@ void Player::deselectItem() {
     @brief Method to use the item selected.
     @param command Vector that contains the command entered by the player.
 */
-void Player::useItemSelected() { 
+void Player::useItemHealer() { 
         if (selectedItem != nullptr) {
 
             if (selectedItem->getItemType() == ItemType::BIG_SHIELD) {
@@ -477,7 +477,7 @@ void Player::movePlayer(const std::vector<std::string>& command) {
 
 
 /*
-    @brief
+    @brief Method to take automatically gold or ammunition from the floor of the room.
 */
 void Player::autoTake() {
     std::list<Entity*> addItemsInventory;

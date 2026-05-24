@@ -123,7 +123,7 @@ void World::processCommand(const std::vector<std::string>& command) {
 	}else if (command[0] == "select") {
 		player->selectItem(command);
 	}else if (command[0] == "use") {
-		player->useItemSelected();
+		player->useItemHealer();
 	}else if (command[0] == "drop") {
 		player->dropItemSelected(command);
 	} else if (command[0] == "open") {

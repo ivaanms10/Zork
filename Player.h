@@ -33,7 +33,7 @@ class Player : public Creature{
 		void openChest(const std::vector<std::string>& command);
 		void selectItem(const std::vector<std::string>& command);
 		void deselectItem();
-		void useItemSelected();
+		void useItemHealer();
 		void openExit(const std::vector<std::string>& command);
 		void closeExit(const std::vector<std::string>& command);
 		void movePlayer(const std::vector<std::string>& command);
