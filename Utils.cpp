@@ -16,12 +16,13 @@ std::vector<std::string> Utils::getPartCommand() {
 	while (parts >> word) {
 		args.push_back(word);
 	}
-
 	return args;
 }
 
+
 /*
 	@brief Method to get the full name of the items.
+	@param command Vector that contains the command entered by the player.
 	@param endName Number with the position of the vector where the name ends
 	@return String with the full name.
 */

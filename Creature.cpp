@@ -36,6 +36,7 @@ Creature::~Creature() {
 
 /*
 	@brief Method to receive damage from a creature.
+	@param damage Amount of damage the creature receives.
 */
 void Creature::receiveDamage(int damage) {
 	if (damage < shield) {

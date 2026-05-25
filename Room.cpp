@@ -30,14 +30,6 @@ Room::~Room() {
 
 
 /*
-
-*/
-void Room::Update(){
-	
-}
-
-
-/*
     @brief Method to show the room items.
 */
 void Room::showRoom() const {

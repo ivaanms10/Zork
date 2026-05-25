@@ -49,6 +49,8 @@ class Player : public Creature{
 		void findEnemie();
 		void decreaseAmountItem();
 		Item* existItemInventory(Item* item);
+		void passTurnEnemy();
+		void Update();
 		
 		void setAmmo(int numAmmo) { this->numAmmo = numAmmo; } //Method to set a new amount of gold.
 		NPC* getSelectedNPC() { return this->selectedNPC; } // Method to get the pointer to the NPC.

@@ -11,7 +11,6 @@ class Room : public Entity{
 		Room(const std::string& name, const std::string& description);
 		~Room();
 
-		void Update();
 		void showRoom() const;
 		void showExits() const;
 

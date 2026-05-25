@@ -82,6 +82,7 @@ void World::createWorld() {
 	NPC* npc2 = new NPC("Big Spider", "Enemie", NPCType::ENEMIES, room6, this);
 	player = new Player("Ivan", "First player playing zork game.", room1, this);
 
+
 	room1->addContains(exit1); room1->addContains(exit2); room1->addContains(exit3); room1->addContains(exit4);
 	room2->addContains(exit8);
 	room3->addContains(exit7);
@@ -89,7 +90,6 @@ void World::createWorld() {
 	room5->addContains(exit10); room5->addContains(exit12);
 	room6->addContains(exit6);room6->addContains(exit13);
 	room7->addContains(exit11);
-
 
 	item1->addContains(item2); item1->addContains(item3); item1->addContains(item10); //Items normal chest
 	item15->addContains(item16); item15->addContains(item17); item15->addContains(item18); item15->addContains(item19); item15->addContains(item20); item15->addContains(item21); //Items big chest
@@ -125,57 +125,74 @@ void World::createWorld() {
 void World::processCommand(const std::vector<std::string>& command) {
 	if (command.empty()) {
 		return;
-	}else if (command[0] == "command" ) {
-		std::cout << "\n======= AVAILABLE COMMANDS =======" << std::endl;
-		std::cout << "stats:          Shows player information." << std::endl;
-		std::cout << "go [Direction]: Moves the player towards an exit (e.g., Go North)." << std::endl;
-		std::cout << "show room:      Displays the room description, exits, and items on the floor." << std::endl;
-		std::cout << "show inventory: Opens your backpack to view your carried items." << std::endl;
-		std::cout << "take [Item]:    Picks up an item from the floor." << std::endl;
-		std::cout << "drop: Drops the item selected to the floor." << std::endl;
-		std::cout << "use: Use the selected item." << std::endl;
-		std::cout << "Exit:           Closes the game safely." << std::endl;
-		std::cout << "====================================\n" << std::endl;
-	}else if (command[0] == "stats") {
-		player->statsPlayer();
-	}else if (command[0] == "go") {
-		player->movePlayer(command);
-	}else if (command[0] == "show" && command[1] == "inventory") {
-		player->showInventory();
-	}else if (command[0] == "take") {
-		player->takeItem(command);
-	}else if (command.size() > 2 && command[0] == "drop") {
-		player->dropItem(command);
-	}else if (command[0] == "show" && command[1] == "room") {
-		player->getLocation()->showRoom();
-	}else if (command[0] == "open" && command[1] == "chest") {
-		player->openChest(command);
-	}else if (command[0] == "select") {
-		player->selectItem(command);
-	}else if (command[0] == "use") {
-		player->useItemHealer();
-	}else if (command[0] == "drop") {
-		player->dropItemSelected(command);
-	} else if (command[0] == "open") {
-		player->openExit(command);
-	} else if (command[0] == "close") {
-		player->closeExit(command);
-	} else if (command[0] == "show" && command[1] == "exits") {
-		player->getLocation()->showExits();
-	}else if (command[0] == "deselect") {
-		player->deselectItem();
-	}else if (command[0] == "talk") {
-		player->talkNPC();
-	}else if (command[0] == "view" && command[1] == "shop") {
-		player->viewShop();
-	}else if (command[0] == "radar") {
-		player->viewRadar();
-	}else if (command[0] == "buy") {
-		player->buyItemShop(command);
-	}else if (command[0] == "sell") {
-		player->sellItemShop(command);
-	}else if (command[0] == "shoot") {
-		player->shootEnemies();
+	} else if (command.size() == 1) {
+		if (command[0] == "commands") {
+			std::cout << "\n================== AVAILABLE COMMANDS ==================" << std::endl;
+			std::cout << "  stats: Shows player stats (kills, death)." << std::endl;
+			std::cout << "  talk: Speaks with a seller NPC in the room." << std::endl;
+			std::cout << "  radar: Radar to see if there are NPCs in the room ." << std::endl;
+			std::cout << "  exit: Close the game." << std::endl;
+			std::cout << "  shoot: Attack enemy NPCs." << std::endl;
+			std::cout << "  use: Use the selected healer item." << std::endl;
+			std::cout << "  go [Direction]: Moves to another room (go North')." << std::endl;
+			std::cout << "  show room: View the room description and floor items." << std::endl;
+			std::cout << "  show exits: View all the exits of the room." << std::endl;
+			std::cout << "  open chest: Open the chest of the room." << std::endl;
+			std::cout << "  open [Direction]: Open a closed exit." << std::endl;
+			std::cout << "  close [Direction]: Close an open exit." << std::endl;
+			std::cout << "  show inventory: View the items the player has in their inventory." << std::endl;
+			std::cout << "  take [Item]: Take an item from the floor." << std::endl;
+			std::cout << "  select [Item]: Select an item from your inventory." << std::endl;
+			std::cout << "  deselect: Deselect the current item selected." << std::endl;
+			std::cout << "  drop: Drop the currently selected item." << std::endl;
+			std::cout << "  drop [Item] (Amount): Drops specific item/quantity from the inventory." << std::endl;
+			std::cout << "  view shop: View the items the seller has in the store." << std::endl;
+			std::cout << "  buy [Item]: Buy an item from the shop." << std::endl;
+			std::cout << "  sell [Item]: Sell an item from your inventory." << std::endl;
+			std::cout << "================================================================\n" << std::endl;
+		} else if (command[0] == "stats") {
+			player->statsPlayer();
+		} else if (command[0] == "use") {
+			player->useItemHealer();
+		} else if (command[0] == "deselect") {
+			player->deselectItem();
+		} else if (command[0] == "talk") {
+			player->talkNPC();
+		} else if (command[0] == "radar") {
+			player->viewRadar();
+		} else if (command[0] == "shoot") {
+			player->shootEnemies();
+		} else if (command[0] == "drop") {
+			player->dropItemSelected(command);
+		}
+	} else if (command.size() >= 2) {
+		if (command[0] == "show" && command[1] == "inventory") {
+			player->showInventory();
+		} else if (command[0] == "show" && command[1] == "room") {
+			player->getLocation()->showRoom();
+		} else if (command[0] == "show" && command[1] == "exits") {
+			player->getLocation()->showExits();
+		} else if (command[0] == "open" && command[1] == "chest") {
+			player->openChest(command);
+		} else if (command[0] == "open" && command.size() == 2) {
+			player->openExit(command);
+		} else if (command[0] == "close" && command.size() == 2) {
+			player->closeExit(command);
+		} else if (command[0] == "view" && command[1] == "shop") {
+			player->viewShop();
+		} else if (command[0] == "drop") {
+			player->dropItem(command);
+		} else if (command[0] == "go" && command.size() == 2) {
+			player->movePlayer(command);
+		}else if (command[0] == "buy") {
+			player->buyItemShop(command);
+		} else if (command[0] == "take") {
+			player->takeItem(command);
+		} else if (command[0] == "select") {
+			player->selectItem(command);
+		} else if (command[0] == "sell") {
+			player->sellItemShop(command);
+		}
 	}
 }
 
@@ -219,8 +236,11 @@ void World::respawnEnemies() {
 	
 	Room* roomEnemy = allRooms[rand() % allRooms.size()];
 	NPC* enemy = new NPC("Big Spider", "Enemie", NPCType::ENEMIES, roomEnemy, this);
+	Item* gold = new Item("Gold", "Gold to buy items in the shop", EntityType::ITEM, ItemType::GOLD, rand() % MAX_GOLD, 1, 0);
+	enemy->addContains(gold);
 	roomEnemy->addContains(enemy);
 	entities.push_back(enemy);
+	entities.push_back(gold);
 	std::cout << "A new enemy has appeared somewhere on the map..." << std::endl;
 }
 
@@ -240,7 +260,7 @@ void World::Update() {
 		if (player->getHealth() == 0) {
 			std::cout << "YOU DIED AT THE HANDS OF " << player->getSelectedNPC()->getName() << std::endl;
 			std::cout << "                GAME OVER                " << std::endl;
-			exit(0);
+			return;
 		}
 		playerTurn = true;
 	}
@@ -252,9 +272,8 @@ void World::Update() {
 			npc->Update();
 		}
 	}
-	player->autoTake();
+	player->Update();
 	if (rand() % 3 == 0) {  //33% of probability to respawn a new enemy.
 		respawnEnemies();
 	}
-
 }

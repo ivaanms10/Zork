@@ -58,5 +58,4 @@ int Item::getMaxAmount() const {
         case ItemType::GOLD:
             return MAX_GOLD;
     }
-    return 1;
 }

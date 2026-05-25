@@ -137,7 +137,7 @@ void NPC::attackPlayer() {
 
 
 /*
-	@brief Method to update the movement of the NPC.
+	@brief Method to update the NPC.
 */
 void NPC::Update() {
 	Player* player = getWorld()->getPlayer();
