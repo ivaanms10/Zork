@@ -3,7 +3,7 @@
 /*
 	@brief Default constructor of the Item class.
 */
-Item::Item() : Entity("", "", EntityType::ITEM), type(ItemType::ITEM), amount(1), value(1) {
+Item::Item() : Entity("", "", EntityType::ITEM), type(ItemType::ITEM), amount(1), value(1), price(100) {
 
 }
 
@@ -16,8 +16,9 @@ Item::Item() : Entity("", "", EntityType::ITEM), type(ItemType::ITEM), amount(1)
 	@param iType Type of item.
 	@param amount Number of items.
 	@param value Value of the item.
+    @param price Price of the item to buy in the shop.
 */
-Item::Item(const std::string& name, const std::string& description, EntityType type, ItemType iType, int amount, int value) : Entity(name, description, type), type(iType), amount(amount), value(value) {
+Item::Item(const std::string& name, const std::string& description, EntityType type, ItemType iType, int amount, int value, int price) : Entity(name, description, type), type(iType), amount(amount), value(value), price(price) {
 
 }
 
@@ -57,5 +58,4 @@ int Item::getMaxAmount() const {
         case ItemType::GOLD:
             return MAX_GOLD;
     }
-    return 1;
 }

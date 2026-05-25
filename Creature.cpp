@@ -5,7 +5,7 @@
 /*
 	@brief Default constructor of the Creature class.
 */
-Creature::Creature() : Entity("","",EntityType::CREATURE), world(nullptr), location(nullptr), health(MAX_HEALTH), shield(MAX_SHIELD) {
+Creature::Creature() : Entity("","",EntityType::CREATURE), world(nullptr), location(nullptr), health(MAX_HEALTH), shield(MAX_SHIELD),numGold(MAX_GOLD_CREATURE) {
 
 }
 
@@ -19,8 +19,9 @@ Creature::Creature() : Entity("","",EntityType::CREATURE), world(nullptr), locat
 	@param location Room where the creature is located.
 	@param health Number of lives the creature has.
 	@param shield Number of shield the creature has.
+	@param gold Amount of gold the creature has
 */
-Creature::Creature(World* world, const std::string& name, const std::string& description, EntityType type, Room* location, int health, int shield) : Entity(name, description, type), world(world), location(location), health(health), shield(shield) {
+Creature::Creature(World* world, const std::string& name, const std::string& description, EntityType type, Room* location, int health, int shield, int gold) : Entity(name, description, type), world(world), location(location), health(health), shield(shield), numGold(gold) {
 
 }
 
@@ -30,4 +31,23 @@ Creature::Creature(World* world, const std::string& name, const std::string& des
 */
 Creature::~Creature() {
 
+}
+
+
+/*
+	@brief Method to receive damage from a creature.
+	@param damage Amount of damage the creature receives.
+*/
+void Creature::receiveDamage(int damage) {
+	if (damage < shield) {
+		shield -= damage;
+	} else {
+		int difDamage = damage - shield;
+		shield = 0;
+		if (difDamage > health) {
+			health = 0;
+		} else {
+			health -= difDamage;
+		}
+	}
 }

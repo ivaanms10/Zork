@@ -3,6 +3,7 @@
 #include "Room.h"
 #include "Exit.h"
 #include "Item.h"
+#include "NPC.h"
 #include <random>
 #include <algorithm>
 #include <iostream>
@@ -10,7 +11,7 @@
 /*
 	@brief Default constructor of the World class.
 */
-World::World() : player(nullptr){
+World::World() : player(nullptr), playerTurn(true){
 	createWorld();
 }
 
@@ -39,14 +40,28 @@ void World::createWorld() {
 	Room* room7 = new Room("Locked Treasure", "A reinforced stone vault holding a massive, heavily padlocked chest.");
 
 
-	Item* item1 = new Item("Big Chest", "Chest that contains a weapon and a curative item", EntityType::ITEM, ItemType::CHEST, 1, 1);
-	Item* item2 = new Item("M4", "Rifle to kill enemies", EntityType::ITEM, ItemType::RIFLE, 1, 25);
-	Item* item3 = new Item("Big Shield", "Shield that health 50", EntityType::ITEM, ItemType::BIG_SHIELD, 1, 50);
-	Item* item4 = new Item("Small Shield", "Shield that health 25", EntityType::ITEM, ItemType::SMALL_SHIELD, 3, 25);
-	Item* item5 = new Item("Small Shield", "Shield that health 25", EntityType::ITEM, ItemType::SMALL_SHIELD, 3, 25);
-	Item* item6 = new Item("Small Shield", "Shield that health 25", EntityType::ITEM, ItemType::SMALL_SHIELD, 3, 25);
-	Item* item7 = new Item("Magic Key", "Key to open blocked exits", EntityType::ITEM, ItemType::KEY, 1, 1);
-
+	Item* item1 = new Item("Normal Chest", "Chest that contains a weapon and a curative item", EntityType::ITEM, ItemType::CHEST, 1, 1, 0);
+	Item* item2 = new Item("Rifle", "Rifle to kill enemies", EntityType::ITEM, ItemType::RIFLE, 1, 80, PRICE_RIFLE);
+	Item* item3 = new Item("Big Shield", "Shield that health 50", EntityType::ITEM, ItemType::BIG_SHIELD, 1, 50, PRICE_BIG_SHIELD);
+	Item* item4 = new Item("Small Shield", "Shield that health 25", EntityType::ITEM, ItemType::SMALL_SHIELD, 3, 25, PRICE_SMALL_SHIELD);
+	Item* item5 = new Item("Small Shield", "Shield that health 25", EntityType::ITEM, ItemType::SMALL_SHIELD, 3, 25, PRICE_SMALL_SHIELD);
+	Item* item6 = new Item("Small Shield", "Shield that health 25", EntityType::ITEM, ItemType::SMALL_SHIELD, 3, 25, PRICE_SMALL_SHIELD);
+	Item* item7 = new Item("Magic Key", "Key to open blocked exits", EntityType::ITEM, ItemType::KEY, 1, 1, 0);
+	Item* item8 = new Item("Rifle", "Rifle to kill enemies", EntityType::ITEM, ItemType::RIFLE, 1, 80, PRICE_RIFLE);
+	Item* item9 = new Item("Gold", "Gold to buy items in the shop", EntityType::ITEM, ItemType::GOLD, rand() % MAX_GOLD, 1, 0);
+	Item* item10 = new Item("Ammo", "Ammo to shoot enemies", EntityType::ITEM, ItemType::AMMUNITION, rand() % MAX_AMMUNATION, 1, PRICE_AMMUNATION);
+	Item* item11 = new Item("Ammo", "Ammo to shoot enemies", EntityType::ITEM, ItemType::AMMUNITION, rand() % MAX_AMMUNATION, 1, PRICE_AMMUNATION);
+	Item* item12 = new Item("Small Shield", "Shield that health 25", EntityType::ITEM, ItemType::SMALL_SHIELD, 3, 25, PRICE_SMALL_SHIELD);
+	Item* item13 = new Item("Shotgun", "Shotgun to kill enemies", EntityType::ITEM, ItemType::SHOTGUN, 1, 120, PRICE_SHOTGUN);
+	Item* item14 = new Item("Ammo", "Ammo to shoot enemies", EntityType::ITEM, ItemType::AMMUNITION, rand() % MAX_AMMUNATION, 1,  PRICE_AMMUNATION);
+	Item* item15 = new Item("Big Chest", "Chest that contains a weapon, curative item and gold", EntityType::ITEM, ItemType::CHEST, 1, 1, 0); 
+	Item* item16 = new Item("Gold Rifle", "Rifle to kill enemies", EntityType::ITEM, ItemType::RIFLE, 1, 150, PRICE_RIFLE);
+	Item* item17 = new Item("Ammo", "Ammo to shoot enemies", EntityType::ITEM, ItemType::AMMUNITION, MAX_AMMUNATION, 1, PRICE_AMMUNATION);
+	Item* item18 = new Item("Big Shield", "Shield that health 50", EntityType::ITEM, ItemType::BIG_SHIELD, 3, 50, PRICE_BIG_SHIELD);
+	Item* item19 = new Item("MedKit", "Kit that healt", EntityType::ITEM, ItemType::KIT, 3, 100, PRICE_KIT);
+	Item* item20 = new Item("Gold", "Gold to buy items in the shop", EntityType::ITEM, ItemType::GOLD, MAX_GOLD, 1, 0);
+	Item* item21 = new Item("Gold Shotgun", "Shotgun to kill enemies", EntityType::ITEM, ItemType::SHOTGUN, 1, 180, PRICE_SHOTGUN);
+	
 
 	Exit* exit1 = new Exit(DirectionType::NORTH, room1, room3,"Exit 1", "Entryway-Sunken Garden", false,nullptr); 
 	Exit* exit2 = new Exit(DirectionType::SOUTH, room1, room4, "Exit 2", "Entryway-Great Hall", false, nullptr);
@@ -63,6 +78,11 @@ void World::createWorld() {
 	Exit* exit13 = new Exit(DirectionType::WEST,room6, room5,"Exit 13","Smuggler's Cove-Rocky Cavern", false, nullptr);
 	
 
+	NPC* npc1 = new NPC("Wizard", "Items seller", NPCType::SELLER, room3, this);
+	NPC* npc2 = new NPC("Big Spider", "Enemie", NPCType::ENEMIES, room6, this);
+	player = new Player("Ivan", "First player playing zork game.", room1, this);
+
+
 	room1->addContains(exit1); room1->addContains(exit2); room1->addContains(exit3); room1->addContains(exit4);
 	room2->addContains(exit8);
 	room3->addContains(exit7);
@@ -71,19 +91,29 @@ void World::createWorld() {
 	room6->addContains(exit6);room6->addContains(exit13);
 	room7->addContains(exit11);
 
-	item1->addContains(item2); item1->addContains(item3); item1->addContains(item7);
-	room4->addContains(item4); room3->addContains(item1); room1->addContains(item5); room3->addContains(item6);
-	
-	player = new Player("Ivan", "First player playing zork game.", room1, this);
+	item1->addContains(item2); item1->addContains(item3); item1->addContains(item10); //Items normal chest
+	item15->addContains(item16); item15->addContains(item17); item15->addContains(item18); item15->addContains(item19); item15->addContains(item20); item15->addContains(item21); //Items big chest
+	npc1->addContains(item8); npc1->addContains(item11); //Items Seller
+	npc2->addContains(item9); npc2->addContains(item7); //Items Enemie
 
+	room4->addContains(item4); room5->addContains(item1); room1->addContains(item13); 
+	room1->addContains(item14); room6->addContains(item6); room2->addContains(item5);
+	room3->addContains(npc1); room6->addContains(npc2);
+	room7->addContains(item15); room7->addContains(item12);
+
+	
 	entities.push_back(room1); entities.push_back(room2); entities.push_back(room3); entities.push_back(room4); 
 	entities.push_back(room5); entities.push_back(room6); entities.push_back(room7);
 	
 	entities.push_back(exit1); entities.push_back(exit2); entities.push_back(exit3); entities.push_back(exit4); entities.push_back(exit5); entities.push_back(exit6); entities.push_back(exit7);
 	entities.push_back(exit8); entities.push_back(exit9); entities.push_back(exit10); entities.push_back(exit11); entities.push_back(exit12); entities.push_back(exit13);
 	
-	entities.push_back(item1); 	entities.push_back(item2); 	entities.push_back(item3); 	entities.push_back(item4); entities.push_back(item5); entities.push_back(item6); entities.push_back(item7);
+	entities.push_back(item1); 	entities.push_back(item2); 	entities.push_back(item3); 	entities.push_back(item4); entities.push_back(item5); entities.push_back(item6); 
+	entities.push_back(item7);  entities.push_back(item8); entities.push_back(item9); entities.push_back(item10); entities.push_back(item11); entities.push_back(item12);
+	entities.push_back(item13); entities.push_back(item14); entities.push_back(item15); entities.push_back(item16); entities.push_back(item17); entities.push_back(item18);
+	entities.push_back(item19); entities.push_back(item20); entities.push_back(item21);
 
+	entities.push_back(npc1); entities.push_back(npc2);
 	entities.push_back(player);
 }
 
@@ -95,45 +125,74 @@ void World::createWorld() {
 void World::processCommand(const std::vector<std::string>& command) {
 	if (command.empty()) {
 		return;
-	}else if (command[0] == "command" ) {
-		std::cout << "\n======= AVAILABLE COMMANDS =======" << std::endl;
-		std::cout << "stats:          Shows player information." << std::endl;
-		std::cout << "go [Direction]: Moves the player towards an exit (e.g., Go North)." << std::endl;
-		std::cout << "show room:      Displays the room description, exits, and items on the floor." << std::endl;
-		std::cout << "show inventory: Opens your backpack to view your carried items." << std::endl;
-		std::cout << "take [Item]:    Picks up an item from the floor." << std::endl;
-		std::cout << "drop: Drops the item selected to the floor." << std::endl;
-		std::cout << "use: Use the selected item." << std::endl;
-		std::cout << "Exit:           Closes the game safely." << std::endl;
-		std::cout << "====================================\n" << std::endl;
-	}else if (command[0] == "stats") {
-		player->statsPlayer();
-	}else if (command[0] == "go") {
-		player->movePlayer(command);
-	}else if (command[0] == "show" && command[1] == "inventory") {
-		player->showInventory();
-	}else if (command[0] == "take") {
-		player->takeItem(command);
-	}else if (command.size() > 2 && command[0] == "drop") {
-		player->dropItem(command);
-	}else if (command[0] == "show" && command[1] == "room") {
-		player->getLocation()->showRoom();
-	}else if (command[0] == "open" && command[1] == "chest") {
-		player->openChest(command);
-	}else if (command[0] == "select") {
-		player->selectItem(command);
-	}else if (command[0] == "use") {
-		player->useItemHealer();
-	}else if (command[0] == "drop") {
-		player->dropItemSelected(command);
-	} else if (command[0] == "open") {
-		player->openExit(command);
-	} else if (command[0] == "close") {
-		player->closeExit(command);
-	} else if (command[0] == "show" && command[1] == "exits") {
-		player->getLocation()->showExits();
-	}else if (command[0] == "deselect") {
-		player->deselectItem();
+	} else if (command.size() == 1) {
+		if (command[0] == "commands") {
+			std::cout << "\n================== AVAILABLE COMMANDS ==================" << std::endl;
+			std::cout << "  stats: Shows player stats (kills, death)." << std::endl;
+			std::cout << "  talk: Speaks with a seller NPC in the room." << std::endl;
+			std::cout << "  radar: Radar to see if there are NPCs in the room ." << std::endl;
+			std::cout << "  exit: Close the game." << std::endl;
+			std::cout << "  shoot: Attack enemy NPCs." << std::endl;
+			std::cout << "  use: Use the selected healer item." << std::endl;
+			std::cout << "  go [Direction]: Moves to another room (go North')." << std::endl;
+			std::cout << "  show room: View the room description and floor items." << std::endl;
+			std::cout << "  show exits: View all the exits of the room." << std::endl;
+			std::cout << "  open chest: Open the chest of the room." << std::endl;
+			std::cout << "  open [Direction]: Open a closed exit." << std::endl;
+			std::cout << "  close [Direction]: Close an open exit." << std::endl;
+			std::cout << "  show inventory: View the items the player has in their inventory." << std::endl;
+			std::cout << "  take [Item]: Take an item from the floor." << std::endl;
+			std::cout << "  select [Item]: Select an item from your inventory." << std::endl;
+			std::cout << "  deselect: Deselect the current item selected." << std::endl;
+			std::cout << "  drop: Drop the currently selected item." << std::endl;
+			std::cout << "  drop [Item] (Amount): Drops specific item/quantity from the inventory." << std::endl;
+			std::cout << "  view shop: View the items the seller has in the store." << std::endl;
+			std::cout << "  buy [Item]: Buy an item from the shop." << std::endl;
+			std::cout << "  sell [Item]: Sell an item from your inventory." << std::endl;
+			std::cout << "================================================================\n" << std::endl;
+		} else if (command[0] == "stats") {
+			player->statsPlayer();
+		} else if (command[0] == "use") {
+			player->useItemHealer();
+		} else if (command[0] == "deselect") {
+			player->deselectItem();
+		} else if (command[0] == "talk") {
+			player->talkNPC();
+		} else if (command[0] == "radar") {
+			player->viewRadar();
+		} else if (command[0] == "shoot") {
+			player->shootEnemies();
+		} else if (command[0] == "drop") {
+			player->dropItemSelected(command);
+		}
+	} else if (command.size() >= 2) {
+		if (command[0] == "show" && command[1] == "inventory") {
+			player->showInventory();
+		} else if (command[0] == "show" && command[1] == "room") {
+			player->getLocation()->showRoom();
+		} else if (command[0] == "show" && command[1] == "exits") {
+			player->getLocation()->showExits();
+		} else if (command[0] == "open" && command[1] == "chest") {
+			player->openChest(command);
+		} else if (command[0] == "open" && command.size() == 2) {
+			player->openExit(command);
+		} else if (command[0] == "close" && command.size() == 2) {
+			player->closeExit(command);
+		} else if (command[0] == "view" && command[1] == "shop") {
+			player->viewShop();
+		} else if (command[0] == "drop") {
+			player->dropItem(command);
+		} else if (command[0] == "go" && command.size() == 2) {
+			player->movePlayer(command);
+		}else if (command[0] == "buy") {
+			player->buyItemShop(command);
+		} else if (command[0] == "take") {
+			player->takeItem(command);
+		} else if (command[0] == "select") {
+			player->selectItem(command);
+		} else if (command[0] == "sell") {
+			player->sellItemShop(command);
+		}
 	}
 }
 
@@ -146,5 +205,75 @@ void World::removeEntity(Entity* entity) {
 	if (entity != nullptr) {
 		entities.erase(std::remove(entities.begin(), entities.end(), entity), entities.end());
 		delete entity;
+	}
+}
+
+
+/*
+	@brief Method to respawn new enemies.
+*/
+void World::respawnEnemies() {
+	for (const auto& it : entities) {
+		NPC* enemy = dynamic_cast<NPC*>(it);
+		
+		if (enemy != nullptr) {
+			if (enemy->getType() == NPCType::ENEMIES) {
+				return;
+			}
+		}
+	}
+
+	std::vector<Room*> allRooms;
+	for (const auto& it : entities) {
+		Room* room = dynamic_cast<Room*>(it);
+
+		if (room != nullptr) {
+			if (room != player->getLocation()) {
+				allRooms.push_back(room);
+			}
+		}
+	}
+	
+	Room* roomEnemy = allRooms[rand() % allRooms.size()];
+	NPC* enemy = new NPC("Big Spider", "Enemie", NPCType::ENEMIES, roomEnemy, this);
+	Item* gold = new Item("Gold", "Gold to buy items in the shop", EntityType::ITEM, ItemType::GOLD, rand() % MAX_GOLD, 1, 0);
+	enemy->addContains(gold);
+	roomEnemy->addContains(enemy);
+	entities.push_back(enemy);
+	entities.push_back(gold);
+	std::cout << "A new enemy has appeared somewhere on the map..." << std::endl;
+}
+
+
+/*
+	@brief Method to update the entity states of the world during the game.
+*/
+void World::Update() {
+	if (playerTurn == false) {
+		if (player->getSelectedNPC() != nullptr) {
+			if (player->getSelectedNPC()->getType() == NPCType::ENEMIES) {
+				std::cout << " ->    Enemy Turn.";
+				player->getSelectedNPC()->attackPlayer();
+			}
+		}
+
+		if (player->getHealth() == 0) {
+			std::cout << "YOU DIED AT THE HANDS OF " << player->getSelectedNPC()->getName() << std::endl;
+			std::cout << "                GAME OVER                " << std::endl;
+			return;
+		}
+		playerTurn = true;
+	}
+
+	for (const auto& it : entities) {
+		NPC* npc = dynamic_cast<NPC*>(it);
+
+		if (npc != nullptr && rand() % 5 == 0) { //20% of probability that the NPC will move.
+			npc->Update();
+		}
+	}
+	player->Update();
+	if (rand() % 3 == 0) {  //33% of probability to respawn a new enemy.
+		respawnEnemies();
 	}
 }

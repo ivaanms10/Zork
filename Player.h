@@ -8,16 +8,18 @@
 class Item;
 class Room;
 class World;
+class NPC;
 
 static const int MAX_ITEM_INVENTORY = 5;
 
+
 class Player : public Creature{
 	private:
-		Item* selectedItem = nullptr;
-		int numKills = 0;
-		int numDeath = 0;
-		int numGold = 0; //Gold to buy new Items.
-		int numAmmo = 0;
+		Item* selectedItem;
+		NPC* selectedNPC;
+		int numKills;
+		int numDeath;
+		int numAmmo;
 
 	public:
 		Player();
@@ -38,12 +40,20 @@ class Player : public Creature{
 		void closeExit(const std::vector<std::string>& command);
 		void movePlayer(const std::vector<std::string>& command);
 		void autoTake();
-
+		void talkNPC();
+		void viewShop();
+		void viewRadar();
+		void buyItemShop(const std::vector<std::string>& command);
+		void sellItemShop(const std::vector<std::string>& command);
+		void shootEnemies();
+		void findEnemie();
 		void decreaseAmountItem();
 		Item* existItemInventory(Item* item);
+		void passTurnEnemy();
+		void Update();
 		
-		void setGold(int numGold) { this->numGold = numGold; } //Method to set a new amount of gold.
 		void setAmmo(int numAmmo) { this->numAmmo = numAmmo; } //Method to set a new amount of gold.
+		NPC* getSelectedNPC() { return this->selectedNPC; } // Method to get the pointer to the NPC.
 };
 
 #endif // !PLAYER_H
