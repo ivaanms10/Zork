@@ -30,13 +30,13 @@ class Exit : public Entity{
 		~Exit();
 
 		std::string getDirectionType() const;
+		bool openExit(Item* key);
+		bool closeExit(Item* key);
+
 		Room* getSource() const { return source; } //Method to get the source room.
 		Room* getDestination() const { return destination; } //Method to get the destination room.
 		bool getBlocked() const { return isBlocked; } //Method to know if the exit is open or not. 
 		Item* getKey() const { return key; } //Method to get the key.
-
-		bool openExit(Item* key);
-		bool closeExit(Item* key);
 };
 
 #endif // !EXIT_H

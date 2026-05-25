@@ -7,6 +7,7 @@
 class Player;
 class Entity;
 
+
 class World{
 	private:
 		Player* player;
@@ -20,8 +21,8 @@ class World{
 		void createWorld();
 		void processCommand(const std::vector<std::string> &command);
 		void removeEntity(Entity* entity);
-		void Update();
 		void respawnEnemies();
+		void Update();
 
 		void addEntity(Entity* entity) { entities.push_back(entity); } //Method to add a new entity.
 		Player* getPlayer() const { return player; } //Method to get the pointer to the Main Player.

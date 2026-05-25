@@ -13,6 +13,7 @@ static const int MAX_SMALL_SHIELD = 50;
 static const int MAX_SHIELD = 100;
 static const int MAX_GOLD_CREATURE = 2000;
 
+
 class Creature : public Entity{
 	private:
 		World* world;
@@ -38,7 +39,6 @@ class Creature : public Entity{
 		void setShield(int shield) { this->shield = shield; } //Method to set a new value of shield.
 		void setHealth(int health) { this->health = health; } //Method to set a new value of health.
 		void setGold(int gold) { this->numGold = gold; } //Method to set a new amount of gold.
-
 };
 
 #endif // !CREATURE_H

@@ -193,6 +193,39 @@ void World::removeEntity(Entity* entity) {
 
 
 /*
+	@brief Method to respawn new enemies.
+*/
+void World::respawnEnemies() {
+	for (const auto& it : entities) {
+		NPC* enemy = dynamic_cast<NPC*>(it);
+		
+		if (enemy != nullptr) {
+			if (enemy->getType() == NPCType::ENEMIES) {
+				return;
+			}
+		}
+	}
+
+	std::vector<Room*> allRooms;
+	for (const auto& it : entities) {
+		Room* room = dynamic_cast<Room*>(it);
+
+		if (room != nullptr) {
+			if (room != player->getLocation()) {
+				allRooms.push_back(room);
+			}
+		}
+	}
+	
+	Room* roomEnemy = allRooms[rand() % allRooms.size()];
+	NPC* enemy = new NPC("Big Spider", "Enemie", NPCType::ENEMIES, roomEnemy, this);
+	roomEnemy->addContains(enemy);
+	entities.push_back(enemy);
+	std::cout << "A new enemy has appeared somewhere on the map..." << std::endl;
+}
+
+
+/*
 	@brief Method to update the entity states of the world during the game.
 */
 void World::Update() {
@@ -224,37 +257,4 @@ void World::Update() {
 		respawnEnemies();
 	}
 
-}
-
-
-/*
-	@brief Method to respawn new enemies.
-*/
-void World::respawnEnemies() {
-	for (const auto& it : entities) {
-		NPC* enemy = dynamic_cast<NPC*>(it);
-		
-		if (enemy != nullptr) {
-			if (enemy->getType() == NPCType::ENEMIES) {
-				return;
-			}
-		}
-	}
-
-	std::vector<Room*> allRooms;
-	for (const auto& it : entities) {
-		Room* room = dynamic_cast<Room*>(it);
-
-		if (room != nullptr) {
-			if (room != player->getLocation()) {
-				allRooms.push_back(room);
-			}
-		}
-	}
-	
-	Room* roomEnemy = allRooms[rand() % allRooms.size()];
-	NPC* enemy = new NPC("Big Spider", "Enemie", NPCType::ENEMIES, roomEnemy, this);
-	roomEnemy->addContains(enemy);
-	entities.push_back(enemy);
-	std::cout << "A new enemy has appeared somewhere on the map..." << std::endl;
 }

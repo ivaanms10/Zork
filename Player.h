@@ -12,13 +12,14 @@ class NPC;
 
 static const int MAX_ITEM_INVENTORY = 5;
 
+
 class Player : public Creature{
 	private:
-		Item* selectedItem = nullptr;
-		NPC* selectedNPC = nullptr;
-		int numKills = 0;
-		int numDeath = 0;
-		int numAmmo = 0;
+		Item* selectedItem;
+		NPC* selectedNPC;
+		int numKills;
+		int numDeath;
+		int numAmmo;
 
 	public:
 		Player();
@@ -46,7 +47,6 @@ class Player : public Creature{
 		void sellItemShop(const std::vector<std::string>& command);
 		void shootEnemies();
 		void findEnemie();
-
 		void decreaseAmountItem();
 		Item* existItemInventory(Item* item);
 		

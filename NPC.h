@@ -4,13 +4,12 @@
 #include "Creature.h"
 #include <string>
 
-static const int MAX_DAMAGE_ENEMIE = 50;
-static const int MIN_DAMAGE_ENEMIE = 50;
-
-
 class Room;
 class World;
 class Item;
+
+static const int MAX_DAMAGE_ENEMIE = 50;
+static const int MIN_DAMAGE_ENEMIE = 50;
 
 //Enum with the 4 possible directions.
 enum class NPCType {
