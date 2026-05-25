@@ -40,15 +40,28 @@ void World::createWorld() {
 	Room* room7 = new Room("Locked Treasure", "A reinforced stone vault holding a massive, heavily padlocked chest.");
 
 
-	Item* item1 = new Item("Big Chest", "Chest that contains a weapon and a curative item", EntityType::ITEM, ItemType::CHEST, 1, 1, 0);
-	Item* item2 = new Item("M4", "Rifle to kill enemies", EntityType::ITEM, ItemType::RIFLE, 1, 80, PRICE_RIFLE);
+	Item* item1 = new Item("Normal Chest", "Chest that contains a weapon and a curative item", EntityType::ITEM, ItemType::CHEST, 1, 1, 0);
+	Item* item2 = new Item("Rifle", "Rifle to kill enemies", EntityType::ITEM, ItemType::RIFLE, 1, 80, PRICE_RIFLE);
 	Item* item3 = new Item("Big Shield", "Shield that health 50", EntityType::ITEM, ItemType::BIG_SHIELD, 1, 50, PRICE_BIG_SHIELD);
 	Item* item4 = new Item("Small Shield", "Shield that health 25", EntityType::ITEM, ItemType::SMALL_SHIELD, 3, 25, PRICE_SMALL_SHIELD);
 	Item* item5 = new Item("Small Shield", "Shield that health 25", EntityType::ITEM, ItemType::SMALL_SHIELD, 3, 25, PRICE_SMALL_SHIELD);
 	Item* item6 = new Item("Small Shield", "Shield that health 25", EntityType::ITEM, ItemType::SMALL_SHIELD, 3, 25, PRICE_SMALL_SHIELD);
 	Item* item7 = new Item("Magic Key", "Key to open blocked exits", EntityType::ITEM, ItemType::KEY, 1, 1, 0);
-	Item* item8 = new Item("M4", "Rifle to kill enemies", EntityType::ITEM, ItemType::RIFLE, 1, 80, PRICE_RIFLE);
-
+	Item* item8 = new Item("Rifle", "Rifle to kill enemies", EntityType::ITEM, ItemType::RIFLE, 1, 80, PRICE_RIFLE);
+	Item* item9 = new Item("Gold", "Gold to buy items in the shop", EntityType::ITEM, ItemType::GOLD, rand() % MAX_GOLD, 1, 0);
+	Item* item10 = new Item("Ammo", "Ammo to shoot enemies", EntityType::ITEM, ItemType::AMMUNITION, rand() % MAX_AMMUNATION, 1, PRICE_AMMUNATION);
+	Item* item11 = new Item("Ammo", "Ammo to shoot enemies", EntityType::ITEM, ItemType::AMMUNITION, rand() % MAX_AMMUNATION, 1, PRICE_AMMUNATION);
+	Item* item12 = new Item("Small Shield", "Shield that health 25", EntityType::ITEM, ItemType::SMALL_SHIELD, 3, 25, PRICE_SMALL_SHIELD);
+	Item* item13 = new Item("Shotgun", "Shotgun to kill enemies", EntityType::ITEM, ItemType::SHOTGUN, 1, 120, PRICE_SHOTGUN);
+	Item* item14 = new Item("Ammo", "Ammo to shoot enemies", EntityType::ITEM, ItemType::AMMUNITION, rand() % MAX_AMMUNATION, 1,  PRICE_AMMUNATION);
+	Item* item15 = new Item("Big Chest", "Chest that contains a weapon, curative item and gold", EntityType::ITEM, ItemType::CHEST, 1, 1, 0); 
+	Item* item16 = new Item("Gold Rifle", "Rifle to kill enemies", EntityType::ITEM, ItemType::RIFLE, 1, 150, PRICE_RIFLE);
+	Item* item17 = new Item("Ammo", "Ammo to shoot enemies", EntityType::ITEM, ItemType::AMMUNITION, MAX_AMMUNATION, 1, PRICE_AMMUNATION);
+	Item* item18 = new Item("Big Shield", "Shield that health 50", EntityType::ITEM, ItemType::BIG_SHIELD, 3, 50, PRICE_BIG_SHIELD);
+	Item* item19 = new Item("MedKit", "Kit that healt", EntityType::ITEM, ItemType::KIT, 3, 100, PRICE_KIT);
+	Item* item20 = new Item("Gold", "Gold to buy items in the shop", EntityType::ITEM, ItemType::GOLD, MAX_GOLD, 1, 0);
+	Item* item21 = new Item("Gold Shotgun", "Shotgun to kill enemies", EntityType::ITEM, ItemType::SHOTGUN, 1, 180, PRICE_SHOTGUN);
+	
 
 	Exit* exit1 = new Exit(DirectionType::NORTH, room1, room3,"Exit 1", "Entryway-Sunken Garden", false,nullptr); 
 	Exit* exit2 = new Exit(DirectionType::SOUTH, room1, room4, "Exit 2", "Entryway-Great Hall", false, nullptr);
@@ -65,8 +78,8 @@ void World::createWorld() {
 	Exit* exit13 = new Exit(DirectionType::WEST,room6, room5,"Exit 13","Smuggler's Cove-Rocky Cavern", false, nullptr);
 	
 
-	NPC* npc1 = new NPC("Seller", "Item seller", NPCType::SELLER, room1, this);
-
+	NPC* npc1 = new NPC("Seller", "Item seller", NPCType::SELLER, room3, this);
+	NPC* npc2 = new NPC("Giant Ant", "Enemie", NPCType::ENEMIES, room6, this);
 	player = new Player("Ivan", "First player playing zork game.", room1, this);
 
 	room1->addContains(exit1); room1->addContains(exit2); room1->addContains(exit3); room1->addContains(exit4);
@@ -77,12 +90,18 @@ void World::createWorld() {
 	room6->addContains(exit6);room6->addContains(exit13);
 	room7->addContains(exit11);
 
-	item1->addContains(item2); item1->addContains(item3); item1->addContains(item7);
-	room4->addContains(item4); room3->addContains(item1); room1->addContains(item5); room3->addContains(item6); room1->addContains(npc1);
 
-	npc1->addContains(item8);
+	item1->addContains(item2); item1->addContains(item3); item1->addContains(item10); //Items normal chest
+	item15->addContains(item16); item15->addContains(item17); item15->addContains(item18); item15->addContains(item19); item15->addContains(item20); item15->addContains(item21); //Items big chest
+	npc1->addContains(item8); npc1->addContains(item11); //Items Seller
+	npc2->addContains(item9); npc2->addContains(item7); //Items Enemie
+
+	room4->addContains(item4); room5->addContains(item1); room1->addContains(item13); 
+	room1->addContains(item14); room6->addContains(item6); room2->addContains(item5);
+	room3->addContains(npc1); room6->addContains(npc2);
+	room7->addContains(item15); room7->addContains(item12);
+
 	
-
 	entities.push_back(room1); entities.push_back(room2); entities.push_back(room3); entities.push_back(room4); 
 	entities.push_back(room5); entities.push_back(room6); entities.push_back(room7);
 	
@@ -90,10 +109,11 @@ void World::createWorld() {
 	entities.push_back(exit8); entities.push_back(exit9); entities.push_back(exit10); entities.push_back(exit11); entities.push_back(exit12); entities.push_back(exit13);
 	
 	entities.push_back(item1); 	entities.push_back(item2); 	entities.push_back(item3); 	entities.push_back(item4); entities.push_back(item5); entities.push_back(item6); 
-	entities.push_back(item7);  entities.push_back(item8);
+	entities.push_back(item7);  entities.push_back(item8); entities.push_back(item9); entities.push_back(item10); entities.push_back(item11); entities.push_back(item12);
+	entities.push_back(item13); entities.push_back(item14); entities.push_back(item15); entities.push_back(item16); entities.push_back(item17); entities.push_back(item18);
+	entities.push_back(item19); entities.push_back(item20); entities.push_back(item21);
 
-	entities.push_back(npc1);
-
+	entities.push_back(npc1); entities.push_back(npc2);
 	entities.push_back(player);
 }
 
@@ -134,7 +154,6 @@ void World::processCommand(const std::vector<std::string>& command) {
 		player->selectItem(command);
 	}else if (command[0] == "use") {
 		player->useItemHealer();
-		playerTurn = false;
 	}else if (command[0] == "drop") {
 		player->dropItemSelected(command);
 	} else if (command[0] == "open") {
@@ -157,7 +176,6 @@ void World::processCommand(const std::vector<std::string>& command) {
 		player->sellItemShop(command);
 	}else if (command[0] == "shoot") {
 		player->shootEnemies();
-		playerTurn = false;
 	}
 }
 
@@ -171,4 +189,35 @@ void World::removeEntity(Entity* entity) {
 		entities.erase(std::remove(entities.begin(), entities.end(), entity), entities.end());
 		delete entity;
 	}
+}
+
+
+/*
+	@brief Method to update the entity states of the world during the game.
+*/
+void World::Update() {
+	if (playerTurn == false) {
+		if (player->getSelectedNPC() != nullptr) {
+			if (player->getSelectedNPC()->getType() == NPCType::ENEMIES) {
+				std::cout << " ->    Enemy Turn.";
+				player->getSelectedNPC()->attackPlayer();
+			}
+		}
+
+		if (player->getHealth() == 0) {
+			std::cout << "YOU DIED AT THE HANDS OF " << player->getSelectedNPC()->getName() << std::endl;
+			std::cout << "                GAME OVER                " << std::endl;
+			exit(0);
+		}
+		playerTurn = true;
+	}
+
+	for (const auto& it : entities) {
+		NPC* npc = dynamic_cast<NPC*>(it);
+
+		if (npc != nullptr && rand() % 5 == 0) { //20% of probability that the NPC will move.
+			npc->Update();
+		}
+	}
+	player->autoTake();
 }

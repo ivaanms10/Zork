@@ -82,12 +82,17 @@ Item* NPC::buyItem(const std::string& itemName, int goldPlayer) {
 			if (item->getName() == itemName) {
 				if (goldPlayer >= item->getPrice()) {
 					removeContains(item);
+					int newGold = getGold() + item->getPrice();
+
+					if (newGold > MAX_GOLD_CREATURE) {
+						setGold(MAX_GOLD_CREATURE);
+					} else {
+						setGold(newGold);
+					}
 					return item;
 				} else {
 					std::cout << "You don't have enough gold to buy " << item->getName() << ". It costs " << item->getPrice() << " gold." << std::endl;
 				}
-			} else {
-				std::cout << "There are no " << itemName << " currently available in the shop." << std::endl;
 			}
 		}
 	}
@@ -102,8 +107,9 @@ Item* NPC::buyItem(const std::string& itemName, int goldPlayer) {
 */
 bool NPC::sellItem(Item* item) {
 	if (item != nullptr) {
-		if (item->getPrice() < getGold()) {
+		if (item->getPrice() <= getGold()) {
 			addContains(item);
+			setGold(getGold() - item->getPrice());
 			return true;
 		} else {
 			std::cout << "You can't sell the" << item->getName() << ". " << getName() << " doesn't have enough gold to buy it." << std::endl;
@@ -123,6 +129,7 @@ void NPC::attackPlayer() {
 
 		if (player != nullptr) {
 			player->receiveDamage(damage);
+			std::cout << "         Damage: " << damage << std::endl;
 			std::cout << " ->" << player->getName() << "   Health: " << player->getHealth() << "  Shield: " << player->getShield() << std::endl;
 		}
 	}
@@ -150,9 +157,12 @@ void NPC::Update() {
 
 			if (!allRoomsToMove.empty()) {
 				Room* newDestination = allRoomsToMove[rand() % allRoomsToMove.size()];
-				getLocation()->removeEntity(this);
-				newDestination->addEntity(this);
-				setLocation(newDestination);
+				if (newDestination != player->getLocation()) {
+					getLocation()->removeEntity(this);
+					newDestination->addEntity(this);
+					setLocation(newDestination);
+					std::cout << std::endl << " !!! " << getName() << " is moving around the map." << std::endl;
+				}
 			}
 		}
 	}

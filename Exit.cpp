@@ -1,5 +1,6 @@
 #include "Exit.h"
 #include "Room.h"
+#include <iostream>
 
 /*
 	@brief Default constructor of the Exit class.
@@ -60,6 +61,7 @@ std::string Exit::getDirectionType() const{
 bool Exit::openExit(Item* item) {
 	if (key != nullptr) {
 		if (key == item) {
+			std::cout << "The exit is correctly open, you can go into the room ..." << std::endl;
 			isBlocked = false;
 			return true;
 		}

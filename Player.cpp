@@ -48,7 +48,7 @@ void Player::statsPlayer() const{
 
     std::cout << "--------------------------------------------------" << std::endl;
     std::cout << " Kills:   " << numKills << "                 Death: " << numDeath << std::endl;
-    std::cout << " Gold:  " << getGold() << std::endl;
+    std::cout << " Gold:  " << getGold() << "                  Ammo: " << numAmmo << std::endl;
     std::cout << "==================================================" << std::endl;
 }
 
@@ -317,6 +317,11 @@ void Player::useItemHealer() {
                     decreaseAmountItem();
                     std::cout << "Healing with a Big Shield...." << std::endl;
                 }
+                if (selectedNPC != nullptr) {
+                    if (selectedNPC->getType() == NPCType::ENEMIES) {
+                        getWorld()->setPlayerTurn(false);
+                    }
+                }
 
             } else if (selectedItem->getItemType() == ItemType::SMALL_SHIELD) {
                 int newShield = getShield() + selectedItem->getValue();
@@ -332,6 +337,11 @@ void Player::useItemHealer() {
                     decreaseAmountItem();
                     std::cout << "Healing with a Small Shield...." << std::endl;
                 }
+                if (selectedNPC != nullptr) {
+                    if (selectedNPC->getType() == NPCType::ENEMIES) {
+                        getWorld()->setPlayerTurn(false);
+                    }
+                }
 
             } else if (selectedItem->getItemType() == ItemType::KIT) {
                 
@@ -341,6 +351,11 @@ void Player::useItemHealer() {
                     setHealth(MAX_HEALTH);
                     decreaseAmountItem();
                     std::cout << "Healing with a Kit...." << std::endl;
+                }
+                if (selectedNPC != nullptr) {
+                    if (selectedNPC->getType() == NPCType::ENEMIES) {
+                        getWorld()->setPlayerTurn(false);
+                    }
                 }
 
             } else if (selectedItem->getItemType() == ItemType::BANDAGES) {
@@ -357,6 +372,12 @@ void Player::useItemHealer() {
                     decreaseAmountItem();
                     std::cout << "Healing with Bandages...." << std::endl;
                 }
+                if (selectedNPC != nullptr) {
+                    if (selectedNPC->getType() == NPCType::ENEMIES) {
+                        getWorld()->setPlayerTurn(false);
+                    }
+                }
+
             }
 
         } else {
@@ -413,7 +434,6 @@ void Player::openExit(const std::vector<std::string>& command) {
                         if (exit->getBlocked()) {
                             exit->openExit(selectedItem);
                         }
-                        std::cout << "The exit is correctly open, you can go into the room ..." << std::endl;
                         break;
                     }
                 }
@@ -467,6 +487,8 @@ void Player::movePlayer(const std::vector<std::string>& command) {
                         std::cout << "The exit is blocked. You need " << exit->getKey()->getName() << " to open." << std::endl;
                     } else {
                         std::cout << "You've moved to the room " << exit->getDestination()->getName() << std::endl;
+                        getLocation()->removeEntity(this);
+                        exit->getDestination()->addContains(this);
                         setLocation(exit->getDestination());
                         selectedNPC = nullptr;
                         findEnemie();
@@ -484,52 +506,58 @@ void Player::movePlayer(const std::vector<std::string>& command) {
 */
 void Player::autoTake() {
     std::list<Entity*> addItemsInventory;
+    
+        for (const auto& it : getLocation()->getContains()) {
+            Item* item = dynamic_cast<Item*>(it);
 
-    for (const auto& it : getLocation()->getContains()) {
-        Item* item = dynamic_cast<Item*>(it);
-        if (item->getItemType() == ItemType::GOLD) {
-            addItemsInventory.push_back(item);
-        } else if (item->getItemType() == ItemType::AMMUNITION) {
-            addItemsInventory.push_back(item);
-        }
-    }
-
-    for (const auto& it : addItemsInventory) {
-        Item* item = dynamic_cast<Item*>(it);
-        if (item->getItemType() == ItemType::GOLD) {
-            int newGold = getGold() + item->getAmount();
-
-            if (newGold > MAX_GOLD) {
-                int difGold = newGold - MAX_GOLD;
-
-                std::cout << " + " << MAX_GOLD - getGold() << " gold." << std::endl;
-                setGold(MAX_GOLD);
-                item->setAmount(difGold);
-            } else {
-                setGold(newGold);
-                std::cout << " + " << item->getAmount() << " gold." << std::endl;
-                getLocation()->removeEntity(it);
-                getWorld()->removeEntity(it);
+            if (item != nullptr) {
+                if (item->getItemType() == ItemType::GOLD) {
+                    addItemsInventory.push_back(item);
+                } else if (item->getItemType() == ItemType::AMMUNITION) {
+                    addItemsInventory.push_back(item);
+                }
             }
-  
-        } else if (item->getItemType() == ItemType::AMMUNITION) {
-            int newAmmo = numAmmo + item->getAmount();
-
-            if (newAmmo > MAX_AMMUNATION) {
-                int difAmmo = newAmmo - MAX_AMMUNATION;
-
-                std::cout << " + " << MAX_AMMUNATION - numAmmo << " ammo." << std::endl;
-                setAmmo(MAX_AMMUNATION);
-                item->setAmount(difAmmo);
-            } else {
-                setAmmo(newAmmo);
-                std::cout << " + " << item->getAmount() << " ammo." << std::endl;
-                getLocation()->removeEntity(it);
-                getWorld()->removeEntity(it);
-            }
-
         }
-    }
+
+        for (const auto& it : addItemsInventory) {
+            Item* item = dynamic_cast<Item*>(it);
+            if (item->getItemType() == ItemType::GOLD) {
+                if (getGold() < MAX_GOLD) {
+                    int newGold = getGold() + item->getAmount();
+
+                    if (newGold > MAX_GOLD) {
+                        int difGold = newGold - MAX_GOLD;
+                        
+                        std::cout << std::endl << "                                           + " << MAX_GOLD - getGold() << " gold." << std::endl;
+                        setGold(MAX_GOLD);
+                        item->setAmount(difGold);
+                    } else {
+                        std::cout << std::endl << "                                           + " << item->getAmount() << " gold." << std::endl;
+                        setGold(newGold);
+                        getLocation()->removeEntity(it);
+                        getWorld()->removeEntity(it);
+                    }
+                }
+
+            } else if (item->getItemType() == ItemType::AMMUNITION) {
+                if (numAmmo < MAX_AMMUNATION) {
+                    int newAmmo = numAmmo + item->getAmount();
+
+                    if (newAmmo > MAX_AMMUNATION) {
+                        int difAmmo = newAmmo - MAX_AMMUNATION;
+
+                        std::cout << std::endl << "                                           + " << MAX_AMMUNATION - numAmmo << " ammo." << std::endl;
+                        setAmmo(MAX_AMMUNATION);
+                        item->setAmount(difAmmo);
+                    } else {
+                        std::cout << std::endl<< "                                           + " << item->getAmount() << " ammo." << std::endl;
+                        setAmmo(newAmmo);
+                        getLocation()->removeEntity(it);
+                        getWorld()->removeEntity(it);
+                    }
+                }
+            }
+        }
 }
 
 
@@ -537,16 +565,21 @@ void Player::autoTake() {
     @brief Method to talk with the NPC in the room
 */
 void Player::talkNPC() {
-    for (const auto& it : getLocation()->getContains()) {
-        NPC* npc = dynamic_cast<NPC*>(it);
+    if (selectedNPC != nullptr && selectedNPC->getType() == NPCType::ENEMIES) {
+        std::cout << "First you must to kill the enemies..." << std::endl;
+    } else {
+        for (const auto& it : getLocation()->getContains()) {
+            NPC* npc = dynamic_cast<NPC*>(it);
 
-        if (npc != nullptr) {
-            if (npc->getType() == NPCType::SELLER) {
-                std::cout << "Welcome to my shop, I'm " << npc->getName() << ". How can I help you?" << std::endl;
-                selectedNPC = npc;
+            if (npc != nullptr) {
+                if (npc->getType() == NPCType::SELLER) {
+                    std::cout << "Welcome to my shop, I'm " << npc->getName() << ". How can I help you?" << std::endl;
+                    selectedNPC = npc;
+                }
             }
         }
     }
+    
 }
 
 
@@ -626,8 +659,18 @@ void Player::sellItemShop(const std::vector<std::string>& command) {
                 if (item != nullptr) {
                     if (item->getName() == Utils::getFullNameItem(command, command.size() - 1)) {
                         if (selectedNPC->sellItem(item)) {
+                            int newGold = getGold() + item->getPrice();
+
+                            if (newGold > MAX_GOLD) {
+                                int difGold = newGold - MAX_GOLD;
+                                setGold(MAX_GOLD);
+                                Item* gold = new Item("Gold", "Gold to buy items in the shop", EntityType::ITEM, ItemType::GOLD, difGold, 1, 0);
+                                getLocation()->addContains(gold);
+                                getWorld()->addEntity(gold);
+                            } else {
+                                setGold(newGold);
+                            }
                             std::cout << item->getName() << " sold successfully. Thank you." << std::endl;
-                            setGold(getGold() + item->getPrice());
                             removeContains(item);
                         }
                     }
@@ -644,26 +687,29 @@ void Player::sellItemShop(const std::vector<std::string>& command) {
 void Player::shootEnemies() {
     if (selectedNPC != nullptr) {
         if (selectedNPC->getType() == NPCType::ENEMIES) {
-            if (selectedItem->getItemType() == ItemType::RIFLE || selectedItem->getItemType() == ItemType::SHOTGUN) {
-                if (numAmmo > 0) {
-                    --numAmmo;
-                    selectedNPC->receiveDamage(selectedItem->getValue());
+            if (selectedItem != nullptr) {
+                if (selectedItem->getItemType() == ItemType::RIFLE || selectedItem->getItemType() == ItemType::SHOTGUN) {
+                    if (numAmmo > 0) {
+                        --numAmmo;
+                        selectedNPC->receiveDamage(selectedItem->getValue());
+                        getWorld()->setPlayerTurn(false);
 
-                    if (selectedNPC->getHealth() == 0) {
-                        std::cout << "Congratulations, you have defeated the enemy " << selectedNPC->getName() << std::endl;
-                        for (const auto& it : selectedNPC->getContains()) {
-                            getLocation()->addContains(it);
+                        if (selectedNPC->getHealth() == 0) {
+                            std::cout << "Congratulations, you have defeated the enemy " << selectedNPC->getName() << std::endl;
+                            for (const auto& it : selectedNPC->getContains()) {
+                                getLocation()->addContains(it);
+                            }
+                            getLocation()->removeEntity(selectedNPC);
+                            getWorld()->removeEntity(selectedNPC);
+                            selectedNPC = nullptr;
+                        } else {
+                            std::cout << " ->" << selectedNPC->getName() << "   Health: " << selectedNPC->getHealth() << "  Shield: " << selectedNPC->getShield() << "  Ammo:" << numAmmo << std::endl;
                         }
-                        getLocation()->removeEntity(selectedNPC);
-                        getWorld()->removeEntity(selectedNPC);
-                        selectedNPC = nullptr;
+                    } else {
+                        std::cout << "You don't have more bullets. RUNN!!!" << std::endl;
                     }
-                    else {
-                        std::cout << " ->" << selectedNPC->getName() << "   Health: " << selectedNPC->getHealth() << "  Shield: " << selectedNPC->getShield() << "  Ammo:" << numAmmo << std::endl;
-                    }
-                }
-                else {
-                    std::cout << "You don't have more bullets. RUNN!!!" << std::endl;
+                } else {
+                    std::cout << "You can't shoot the enemies you need a Rifle or a Shotgun to do that." << std::endl;
                 }
             }
         }
@@ -681,7 +727,7 @@ void Player::findEnemie() {
         if (enemy != nullptr) {
             if (enemy->getType() == NPCType::ENEMIES) {
                 std::cout << "!!!!! A wild " << enemy->getName() << " appears in the room!!!!!" << std::endl;
-                std::cout << " ->" << selectedNPC->getName() << "   Health: " << selectedNPC->getHealth() << "  Shield: " << selectedNPC->getShield() << std::endl;
+                std::cout << " ->" << enemy->getName() << "   Health: " << enemy->getHealth() << "  Shield: " << enemy->getShield() << std::endl;
                 selectedNPC = enemy;
                 break;
             }
