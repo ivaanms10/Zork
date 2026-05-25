@@ -32,6 +32,7 @@ class NPC : public Creature{
 		Item* buyItem(const std::string& itemName, int goldPlayer);
 		bool sellItem(Item* item);
 		void attackPlayer();
+		void Update();
 		
 		NPCType getType() const { return type; } //Method to get the type of NPC.
 };

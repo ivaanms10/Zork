@@ -3,7 +3,9 @@
 #include "World.h"
 #include "Item.h"
 #include "Player.h"
+#include "Exit.h"
 #include <iostream>
+#include <vector>
 
 /*
 	@brief Default constructor of the NPC class.
@@ -122,6 +124,36 @@ void NPC::attackPlayer() {
 		if (player != nullptr) {
 			player->receiveDamage(damage);
 			std::cout << " ->" << player->getName() << "   Health: " << player->getHealth() << "  Shield: " << player->getShield() << std::endl;
+		}
+	}
+}
+
+
+/*
+	@brief Method to update the movement of the NPC.
+*/
+void NPC::Update() {
+	Player* player = getWorld()->getPlayer();
+
+	if (player != nullptr) {
+		if (getLocation() != player->getLocation()) {
+			std::vector<Room*> allRoomsToMove;
+			for (const auto& it : getLocation()->getContains()) {
+				Exit* exit = dynamic_cast<Exit*>(it);
+
+				if (exit != nullptr) {
+					if (!exit->getBlocked()) {
+						allRoomsToMove.push_back(exit->getDestination());
+					}
+				}
+			}
+
+			if (!allRoomsToMove.empty()) {
+				Room* newDestination = allRoomsToMove[rand() % allRoomsToMove.size()];
+				getLocation()->removeEntity(this);
+				newDestination->addEntity(this);
+				setLocation(newDestination);
+			}
 		}
 	}
 }

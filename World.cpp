@@ -11,7 +11,7 @@
 /*
 	@brief Default constructor of the World class.
 */
-World::World() : player(nullptr){
+World::World() : player(nullptr), playerTurn(true){
 	createWorld();
 }
 
@@ -134,6 +134,7 @@ void World::processCommand(const std::vector<std::string>& command) {
 		player->selectItem(command);
 	}else if (command[0] == "use") {
 		player->useItemHealer();
+		playerTurn = false;
 	}else if (command[0] == "drop") {
 		player->dropItemSelected(command);
 	} else if (command[0] == "open") {
@@ -154,6 +155,9 @@ void World::processCommand(const std::vector<std::string>& command) {
 		player->buyItemShop(command);
 	}else if (command[0] == "sell") {
 		player->sellItemShop(command);
+	}else if (command[0] == "shoot") {
+		player->shootEnemies();
+		playerTurn = false;
 	}
 }
 
