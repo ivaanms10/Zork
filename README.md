@@ -4,7 +4,7 @@ Welcome to **Zork**, a adventure game written in C++ for the Advanced Programmin
  
 ## Information
  
-**Author:** Iv·n Morales S·nchez  
+**Author:** Iv√°n Morales S√°nchez  
 **GitHub Repository:** https://github.com/ivaanms10/Zork  
 **License:** MIT License
  
@@ -15,8 +15,7 @@ You start in the **Entryway**, where a Shotgun and some Ammo are on the floor, p
 Your goal is to explore the map, get new resources, defeat the first enemy, and unlock the secrets of the Locked Treasure room. The game ends when you type `exit`  or when an enemy kill you.
  
 ### World Map
- 
-![Game Map](link_mapa)
+ ![Game Map](https://github.com/user-attachments/assets/cfeb748c-72b9-4846-a4b9-2210d743ae60)
  
 ### Enemies & Combat
  
