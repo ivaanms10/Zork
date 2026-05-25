@@ -78,8 +78,8 @@ void World::createWorld() {
 	Exit* exit13 = new Exit(DirectionType::WEST,room6, room5,"Exit 13","Smuggler's Cove-Rocky Cavern", false, nullptr);
 	
 
-	NPC* npc1 = new NPC("Seller", "Item seller", NPCType::SELLER, room3, this);
-	NPC* npc2 = new NPC("Giant Ant", "Enemie", NPCType::ENEMIES, room6, this);
+	NPC* npc1 = new NPC("Wizard", "Items seller", NPCType::SELLER, room3, this);
+	NPC* npc2 = new NPC("Big Spider", "Enemie", NPCType::ENEMIES, room6, this);
 	player = new Player("Ivan", "First player playing zork game.", room1, this);
 
 	room1->addContains(exit1); room1->addContains(exit2); room1->addContains(exit3); room1->addContains(exit4);
@@ -220,4 +220,41 @@ void World::Update() {
 		}
 	}
 	player->autoTake();
+	if (rand() % 3 == 0) {  //33% of probability to respawn a new enemy.
+		respawnEnemies();
+	}
+
+}
+
+
+/*
+	@brief Method to respawn new enemies.
+*/
+void World::respawnEnemies() {
+	for (const auto& it : entities) {
+		NPC* enemy = dynamic_cast<NPC*>(it);
+		
+		if (enemy != nullptr) {
+			if (enemy->getType() == NPCType::ENEMIES) {
+				return;
+			}
+		}
+	}
+
+	std::vector<Room*> allRooms;
+	for (const auto& it : entities) {
+		Room* room = dynamic_cast<Room*>(it);
+
+		if (room != nullptr) {
+			if (room != player->getLocation()) {
+				allRooms.push_back(room);
+			}
+		}
+	}
+	
+	Room* roomEnemy = allRooms[rand() % allRooms.size()];
+	NPC* enemy = new NPC("Big Spider", "Enemie", NPCType::ENEMIES, roomEnemy, this);
+	roomEnemy->addContains(enemy);
+	entities.push_back(enemy);
+	std::cout << "A new enemy has appeared somewhere on the map..." << std::endl;
 }

@@ -4,7 +4,7 @@
 #include "Creature.h"
 #include <string>
 
-static const int MAX_DAMAGE_ENEMIE = 100;
+static const int MAX_DAMAGE_ENEMIE = 50;
 static const int MIN_DAMAGE_ENEMIE = 50;
 
 
